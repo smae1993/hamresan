@@ -115,7 +115,15 @@ class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
 
   // ---- Cancel / done ----
 
-  void cancel() => state = const TransferIdle();
+  void cancel() {
+    _transferRepo.cancel();
+    _sub?.cancel();
+    final current = state;
+    if (current is TransferTransferring) {
+      _recordHistory(current.session, TransferStatus.cancelled);
+    }
+    state = const TransferIdle();
+  }
 
   /// Called from the success screen's "تمام" button.
   void finish() => state = const TransferIdle();

@@ -78,10 +78,11 @@ extension TransferDirectionX on TransferDirection {
 }
 
 /// Lifecycle status of a completed/failed transfer record.
-enum TransferStatus { done, failed }
+enum TransferStatus { done, failed, cancelled }
 
 extension TransferStatusX on TransferStatus {
   bool get isFailed => this == TransferStatus.failed;
+  bool get isCancelled => this == TransferStatus.cancelled;
 }
 
 /// Semantic color for a content kind (used by icons in lists).

@@ -7,8 +7,9 @@ import '../../features/transfer/presentation/content_picker_sheet.dart';
 import '../../features/transfer/presentation/providers/transfer_provider.dart';
 import '../../features/transfer/presentation/recipient_sheet.dart';
 import '../../features/transfer/presentation/transfer_screen.dart';
-import '../../core/utils/fa_digits.dart';
-import '../../core/utils/size_format.dart';
+import '../providers/repository_providers.dart';
+import '../utils/fa_digits.dart';
+import '../utils/size_format.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dimensions.dart';
 import '../theme/app_gradients.dart';
@@ -30,6 +31,14 @@ class _TransferFlowOverlayState extends ConsumerState<TransferFlowOverlay> {
   @override
   Widget build(BuildContext context) {
     final flow = ref.watch(transferFlowProvider);
+
+    ref.listen<AsyncValue<IncomingRequest?>>(incomingStreamProvider, (_, next) {
+      next.whenData((req) {
+        if (req != null && flow is TransferIdle) {
+          ref.read(transferFlowProvider.notifier).showIncoming(req);
+        }
+      });
+    });
 
     return switch (flow) {
       TransferTransferring(

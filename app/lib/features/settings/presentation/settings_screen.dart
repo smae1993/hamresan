@@ -14,8 +14,6 @@ import '../../../core/widgets/app_topbar.dart';
 import '../../../core/widgets/brand_logo.dart';
 import '../../../core/widgets/segmented_control.dart';
 import '../../discovery/presentation/providers/identity_provider.dart';
-import '../../discovery/data/mock_devices.dart' show mockIncomingRequest;
-import '../../transfer/presentation/providers/transfer_provider.dart';
 import '../domain/entities/app_preferences.dart';
 import 'providers/preferences_provider.dart';
 import 'widgets/profile_card.dart';
@@ -131,9 +129,7 @@ class SettingsScreen extends ConsumerWidget {
                     icon: AppIconName.download,
                     label: 'آزمایش دریافت فایل',
                     caption: 'شبیه‌سازی یک درخواست ورودی',
-                    onTap: () => ref
-                        .read(transferFlowProvider.notifier)
-                        .showIncoming(mockIncomingRequest),
+                    onTap: () {},
                     tintedIcon: true,
                   ),
                   _InfoRow(icon: AppIconName.info, label: 'نسخه', value: '۱٫۰٫۰'),

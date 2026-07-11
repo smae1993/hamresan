@@ -14,8 +14,6 @@ import '../../../core/widgets/brand_logo.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/section_header.dart';
-import '../../transfer/domain/entities/incoming_request.dart';
-import '../../discovery/data/mock_devices.dart' show mockIncomingRequest;
 import '../../settings/domain/entities/app_preferences.dart';
 import '../../settings/presentation/providers/preferences_provider.dart';
 import '../../transfer/presentation/providers/transfer_provider.dart';
@@ -99,14 +97,8 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _triggerIncomingDemo(WidgetRef ref) {
-    // Bell shows the incoming demo request.
-    ref.read(transferFlowProvider.notifier).showIncoming(mockIncomingRequest);
-  }
+  void _triggerIncomingDemo(WidgetRef ref) {}
 }
-
-// Local demo request shown when pressing the bell, mirroring INCOMING_REQ.
-IncomingRequest get mockIncomingForBell => mockIncomingRequest;
 
 class _Body extends StatelessWidget {
   const _Body({required this.me, required this.devices, required this.onPickDevice, required this.onSendFlow});

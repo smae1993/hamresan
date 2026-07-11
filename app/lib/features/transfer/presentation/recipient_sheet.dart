@@ -13,8 +13,8 @@ import '../../../core/widgets/app_bottom_sheet.dart';
 import '../../../core/widgets/app_icon.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/live_dot.dart';
-import '../../discovery/data/mock_devices.dart';
 import '../../discovery/domain/entities/device.dart';
+import '../../discovery/presentation/providers/discovery_provider.dart';
 import '../domain/entities/content_item.dart';
 
 /// Shows the recipient sheet and awaits the chosen [Device].
@@ -40,12 +40,17 @@ class RecipientSheetBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
+    final devicesAsync = ref.watch(discoveryProvider);
+    final devices = devicesAsync.maybeWhen(
+      data: (d) => d,
+      orElse: () => <Device>[],
+    );
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          for (final d in mockDevices)
+          for (final d in devices)
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {

@@ -10,6 +10,7 @@ import '../../../core/theme/app_gradients.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/fa_digits.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/utils/size_format.dart';
 import '../../../core/widgets/app_bottom_sheet.dart';
 import '../../../core/widgets/app_icon.dart';
@@ -17,7 +18,6 @@ import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/segmented_control.dart';
 import '../../../core/widgets/stripe_placeholder.dart';
-import '../../discovery/data/mock_devices.dart';
 import '../../discovery/domain/entities/device.dart';
 import '../domain/entities/content_item.dart';
 import '../domain/enums.dart';
@@ -62,6 +62,7 @@ class PickerSheetBody extends ConsumerStatefulWidget {
 class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
   int _tab = 0;
   final _selected = <String, ContentItem>{};
+  final _contentCache = <ContentKind, List<ContentItem>>{};
 
   static const _tabs = [
     SegmentedItem(label: 'عکس', icon: AppIconName.image),
@@ -69,6 +70,22 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
     SegmentedItem(label: 'فایل', icon: AppIconName.file),
     SegmentedItem(label: 'برنامه', icon: AppIconName.apps),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContent();
+  }
+
+  Future<void> _loadContent() async {
+    final repo = ref.read(contentRepositoryProvider);
+    final kinds = [ContentKind.image, ContentKind.video, ContentKind.doc, ContentKind.app];
+    for (final kind in kinds) {
+      final items = await repo.getByKind(kind);
+      _contentCache[kind] = items;
+    }
+    if (mounted) setState(() {});
+  }
 
   void _toggle(ContentItem item) {
     setState(() {
@@ -138,37 +155,24 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
   }
 
   Widget _buildContent() {
-    switch (_tab) {
-      case 0:
-        return _MediaGrid(
-          items: mockPhotos,
-          kind: ContentKind.image,
-          selected: _selected,
-          onToggle: _toggle,
-        );
-      case 1:
-        return _MediaGrid(
-          items: mockVideos,
-          kind: ContentKind.video,
-          selected: _selected,
-          onToggle: _toggle,
-        );
-      case 2:
-        return _FileList(
-          items: mockFiles,
-          selected: _selected,
-          onToggle: _toggle,
-        );
-      case 3:
-        return _FileList(
-          items: mockApps,
-          isApp: true,
-          selected: _selected,
-          onToggle: _toggle,
-        );
-      default:
-        return const SizedBox.shrink();
+    final kind = switch (_tab) {
+      0 => ContentKind.image,
+      1 => ContentKind.video,
+      2 => ContentKind.doc,
+      3 => ContentKind.app,
+      _ => ContentKind.image,
+    };
+    final items = _contentCache[kind];
+    if (items == null) {
+      return const Center(child: CircularProgressIndicator());
     }
+    if (_tab == 2) {
+      return _FileList(items: items, selected: _selected, onToggle: _toggle);
+    }
+    if (_tab == 3) {
+      return _FileList(items: items, isApp: true, selected: _selected, onToggle: _toggle);
+    }
+    return _MediaGrid(items: items, kind: kind, selected: _selected, onToggle: _toggle);
   }
 }
 

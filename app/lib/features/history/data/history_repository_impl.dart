@@ -2,20 +2,21 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/entities/transfer_record.dart';
 import '../domain/repositories/history_repository.dart';
-import '../../discovery/data/mock_devices.dart' show seedHistory;
 
 class HistoryRepositoryImpl implements HistoryRepository {
   HistoryRepositoryImpl({required SharedPreferences prefs}) : _prefs = prefs {
-    _migrateSeed();
+    _migrate();
   }
 
   final SharedPreferences _prefs;
   static const _key = 'hamresan_history';
+  static const _verKey = 'hamresan_version';
 
-  void _migrateSeed() {
-    if (!_prefs.containsKey(_key)) {
-      final encoded = json.encode(seedHistory.map((r) => r.toJson()).toList());
-      _prefs.setString(_key, encoded);
+  void _migrate() {
+    final ver = _prefs.getInt(_verKey) ?? 0;
+    if (ver < 2) {
+      _prefs.remove(_key);
+      _prefs.setInt(_verKey, 2);
     }
   }
 

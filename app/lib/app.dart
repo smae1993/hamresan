@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/lan_initializer.dart';
 import 'core/router/app_router.dart' show routerProvider;
 import 'core/theme/app_theme.dart';
 import 'features/settings/domain/entities/app_preferences.dart';
@@ -30,9 +31,11 @@ class _HamresanAppState extends ConsumerState<HamresanApp> {
       themeMode: prefs.theme == AppThemeMode.dark ? ThemeMode.dark : ThemeMode.light,
       routerConfig: router,
       builder: (context, child) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: child ?? const SizedBox.shrink(),
+        return LanInitializer(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: child ?? const SizedBox.shrink(),
+          ),
         );
       },
       localizationsDelegates: const [

@@ -116,19 +116,24 @@ const _kFilled = <AppIconName>{AppIconName.check, AppIconName.checkbold};
 
 /// Builds the inline SVG string for [name].
 String iconSvg(AppIconName name, {Color? color, double stroke = 2}) {
-  final d = _kPaths[name] ?? '';
+  final raw = _kPaths[name] ?? '';
   final filled = _kFilled.contains(name);
-  final hex = (color ?? const Color(0xFF000000))
-      .toARGB32()
-      .toRadixString(16)
-      .padLeft(8, '0');
+  final argb = (color ?? const Color(0xFF000000)).toARGB32();
+  final hex = '${((argb >> 16) & 0xFF).toRadixString(16).padLeft(2, '0')}'
+      '${((argb >> 8) & 0xFF).toRadixString(16).padLeft(2, '0')}'
+      '${(argb & 0xFF).toRadixString(16).padLeft(2, '0')}'
+      '${((argb >> 24) & 0xFF).toRadixString(16).padLeft(2, '0')}';
   final fillAttr = filled ? '#$hex' : 'none';
   final strokeAttr = filled ? 'none' : '#$hex';
+  final paths = raw.split(' M').asMap().entries.map((e) {
+    final d = e.key == 0 ? e.value : 'M${e.value}';
+    return '    <path d="$d" />';
+  }).join('\n');
   return '''
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
   fill="$fillAttr" stroke="$strokeAttr" stroke-width="$stroke"
   stroke-linecap="round" stroke-linejoin="round">
-  $d
+$paths
 </svg>''';
 }
 

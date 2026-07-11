@@ -32,7 +32,12 @@ Future<Device?> showRecipientSheet(
 }
 
 class RecipientSheetBody extends ConsumerWidget {
-  const RecipientSheetBody({super.key, required this.items, this.onPick, this.onCancel});
+  const RecipientSheetBody({
+    super.key,
+    required this.items,
+    this.onPick,
+    this.onCancel,
+  });
   final List<ContentItem> items;
   final ValueChanged<Device>? onPick;
   final VoidCallback? onCancel;
@@ -61,7 +66,10 @@ class RecipientSheetBody extends ConsumerWidget {
                 }
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 child: Row(
                   children: [
                     Avatar(hue: d.hue, type: d.type, size: 46, ring: true),
@@ -76,8 +84,12 @@ class RecipientSheetBody extends ConsumerWidget {
                             children: [
                               LiveDot(color: c.green, size: 6),
                               const SizedBox(width: 5),
-                              Text('آنلاین · ${d.platform}',
-                                  style: AppTextStyles.fileSub.copyWith(color: c.muted)),
+                              Text(
+                                'آنلاین · ${d.platform}',
+                                style: AppTextStyles.fileSub.copyWith(
+                                  color: c.muted,
+                                ),
+                              ),
                             ],
                           ),
                         ],

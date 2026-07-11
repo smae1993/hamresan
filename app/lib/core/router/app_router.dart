@@ -79,19 +79,20 @@ class _ScaffoldWithNav extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          navigationShell,
-          const Positioned.fill(
-            child: TransferFlowOverlay(),
+          Column(
+            children: [
+              Expanded(child: navigationShell),
+              BottomNavBar(
+                active: navigationShell.currentIndex,
+                onChanged: (i) => navigationShell.goBranch(
+                  i,
+                  initialLocation: i == navigationShell.currentIndex,
+                ),
+              ),
+            ],
           ),
+          const TransferFlowOverlay(),
         ],
-      ),
-      extendBody: true,
-      bottomNavigationBar: BottomNavBar(
-        active: navigationShell.currentIndex,
-        onChanged: (i) => navigationShell.goBranch(
-          i,
-          initialLocation: i == navigationShell.currentIndex,
-        ),
       ),
     );
   }

@@ -16,6 +16,9 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../settings/domain/entities/app_preferences.dart';
 import '../../settings/presentation/providers/preferences_provider.dart';
+import '../../transfer/domain/entities/content_item.dart';
+import '../../transfer/domain/entities/incoming_request.dart';
+import '../../transfer/domain/enums.dart';
 import '../../transfer/presentation/providers/transfer_provider.dart';
 import '../domain/entities/device.dart';
 import '../domain/entities/identity.dart';
@@ -61,17 +64,16 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
                 Expanded(
-                  child: devicesAsync.when(
-                    data: (devices) => _Body(
-                      me: me,
-                      devices: devices,
-                      onPickDevice: (d) =>
-                          ref.read(transferFlowProvider.notifier).startSendToDevice(d),
-                      onSendFlow: () =>
-                          ref.read(transferFlowProvider.notifier).startSendFlow(),
+                  child: _Body(
+                    me: me,
+                    devices: devicesAsync.maybeWhen(
+                      data: (d) => d,
+                      orElse: () => const [],
                     ),
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, _) => Center(child: Text('$e')),
+                    onPickDevice: (d) =>
+                        ref.read(transferFlowProvider.notifier).startSendToDevice(d),
+                    onSendFlow: () =>
+                        ref.read(transferFlowProvider.notifier).startSendFlow(),
                   ),
                 ),
               ],
@@ -97,7 +99,22 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _triggerIncomingDemo(WidgetRef ref) {}
+  void _triggerIncomingDemo(WidgetRef ref) {
+    final request = IncomingRequest(
+      peer: 'گوشی علی',
+      hue: 200,
+      type: 'phone',
+      platform: 'Android',
+      code: 'ققنوس-۱۴',
+      items: [
+        ContentItem(key: 'demo-1', name: 'غروب ساحل.jpg', kind: ContentKind.image, size: '۴٫۲ MB', hue: 24),
+        ContentItem(key: 'demo-2', name: 'تولد.jpg', kind: ContentKind.image, size: '۳٫۱ MB', hue: 330),
+        ContentItem(key: 'demo-3', name: 'سفر شمال.mp4', kind: ContentKind.video, size: '۸۸ MB', hue: 200),
+      ],
+      total: '۹۵٫۳ MB',
+    );
+    ref.read(transferFlowProvider.notifier).showIncoming(request);
+  }
 }
 
 class _Body extends StatelessWidget {
@@ -123,21 +140,58 @@ class _Body extends StatelessWidget {
             count: devices.length,
             trailing: const _ScanningLabel(),
           ),
-          GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            childAspectRatio: 0.92,
-            children: [
-              for (var i = 0; i < devices.length; i++)
-                DeviceCard(
-                  device: devices[i],
-                  index: i,
-                  onTap: () => onPickDevice(devices[i]),
-                ),
-            ],
+          if (devices.isEmpty)
+            _EmptyState()
+          else
+            GridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              childAspectRatio: 0.92,
+              children: [
+                for (var i = 0; i < devices.length; i++)
+                  DeviceCard(
+                    device: devices[i],
+                    index: i,
+                    onTap: () => onPickDevice(devices[i]),
+                  ),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Container(
+      margin: const EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusMd),
+        border: Border.all(color: c.border),
+      ),
+      child: Column(
+        children: [
+          AppIcon(AppIconName.wifi, size: 48, color: c.faint),
+          const SizedBox(height: 16),
+          Text(
+            'هیچ دستگاهی پیدا نشد',
+            style: AppTextStyles.setLabel.copyWith(fontSize: 16),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'مطمئن شو همه دستگاه‌ها به یک شبکه وصل هستند\nو برنامه در آن‌ها باز است.',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.setCap.copyWith(color: c.muted, height: 1.6),
           ),
         ],
       ),

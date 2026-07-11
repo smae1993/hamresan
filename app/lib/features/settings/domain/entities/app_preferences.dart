@@ -13,7 +13,7 @@ class AppPreferences {
     this.theme = AppThemeMode.light,
     this.visible = true,
     this.autoAccept = false,
-    this.savePath = 'دریافتی‌های همرسان',
+    this.savePath = '',
   });
 
   final AppThemeMode theme;

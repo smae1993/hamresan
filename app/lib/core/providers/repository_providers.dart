@@ -68,5 +68,5 @@ final incomingStreamProvider = StreamProvider<IncomingRequest?>((ref) {
 });
 
 final transferRepositoryProvider = Provider<TransferRepository>((ref) {
-  return TransferRepositoryImpl(ref.watch(lanServiceProvider));
+  return TransferRepositoryImpl(ref.watch(lanServiceProvider), ref.watch(sharedPreferencesProvider));
 });

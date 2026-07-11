@@ -38,6 +38,11 @@ class PreferencesNotifier extends StateNotifier<AppPreferences> {
     state = state.copyWith(autoAccept: v);
     await _repo.save(state);
   }
+
+  Future<void> setSavePath(String path) async {
+    state = state.copyWith(savePath: path);
+    await _repo.save(state);
+  }
 }
 
 final preferencesProvider =

@@ -73,9 +73,10 @@ class _AppSheetState extends State<AppSheet>
       duration: const Duration(milliseconds: 400),
     );
     _scrim = CurvedAnimation(parent: _c, curve: Curves.easeOutCubic);
-    _sheet = Tween(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(parent: _c, curve: Curves.easeOutCubic),
-    );
+    _sheet = Tween(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _c, curve: Curves.easeOutCubic));
     _c.value = 1; // start hidden, then animate in
     _c.reverse();
   }
@@ -95,6 +96,7 @@ class _AppSheetState extends State<AppSheet>
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final bottomInset = MediaQuery.of(context).padding.bottom;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
@@ -118,7 +120,7 @@ class _AppSheetState extends State<AppSheet>
                 Positioned(
                   left: 0,
                   right: 0,
-                  bottom: 0,
+                  bottom: bottomInset,
                   child: FractionalTranslation(
                     translation: Offset(0, _sheet.value),
                     child: _sheetCard(c),
@@ -133,9 +135,11 @@ class _AppSheetState extends State<AppSheet>
   }
 
   Widget _sheetCard(AppColors c) {
+    final mq = MediaQuery.of(context);
+    final bottomInset = mq.padding.bottom;
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.9,
+        maxHeight: (mq.size.height - bottomInset) * 0.9,
       ),
       decoration: BoxDecoration(
         color: c.bg,
@@ -176,7 +180,9 @@ class _AppSheetState extends State<AppSheet>
                           padding: const EdgeInsets.only(top: 2),
                           child: Text(
                             widget.subtitle!,
-                            style: AppTextStyles.sheetSub.copyWith(color: c.muted),
+                            style: AppTextStyles.sheetSub.copyWith(
+                              color: c.muted,
+                            ),
                           ),
                         ),
                     ],
@@ -196,9 +202,7 @@ class _AppSheetState extends State<AppSheet>
           ),
           Flexible(
             child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                bottom: widget.footer == null ? 16 : 0,
-              ),
+              padding: EdgeInsets.only(bottom: widget.footer == null ? 16 : 0),
               child: widget.body,
             ),
           ),
@@ -208,10 +212,7 @@ class _AppSheetState extends State<AppSheet>
               decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: c.border)),
               ),
-              child: SafeArea(
-                top: false,
-                child: widget.footer!,
-              ),
+              child: SafeArea(top: false, child: widget.footer!),
             ),
         ],
       ),

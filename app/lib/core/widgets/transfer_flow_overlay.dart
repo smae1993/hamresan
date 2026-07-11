@@ -41,11 +41,7 @@ class _TransferFlowOverlayState extends ConsumerState<TransferFlowOverlay> {
     });
 
     return switch (flow) {
-      TransferTransferring(
-        :final session,
-        :final progress,
-        :final done,
-      ) =>
+      TransferTransferring(:final session, :final progress, :final done) =>
         TransferScreen(
           session: session,
           progress: progress,
@@ -54,44 +50,40 @@ class _TransferFlowOverlayState extends ConsumerState<TransferFlowOverlay> {
           onFinish: () => ref.read(transferFlowProvider.notifier).finish(),
         ),
       TransferPicker(:final device) => _SheetOverlay(
-          title: device != null ? 'ارسال به ${device.name}' : 'انتخاب محتوا',
-          subtitle: device != null
-              ? '${device.platform} · #${device.code}'
-              : 'موارد دلخواهت را انتخاب کن',
-          leading: device != null
-              ? Avatar(hue: device.hue, type: device.type, size: 42)
-              : null,
-          body: PickerSheetBody(
-            device: device,
-            onConfirm: (result) =>
-                ref.read(transferFlowProvider.notifier).confirmPicker(
-                      result.items,
-                      result.device,
-                    ),
-          ),
-          onClose: () => ref.read(transferFlowProvider.notifier).cancel(),
+        title: device != null ? 'ارسال به ${device.name}' : 'انتخاب محتوا',
+        subtitle: device != null
+            ? '${device.platform} · #${device.code}'
+            : 'موارد دلخواهت را انتخاب کن',
+        leading: device != null
+            ? Avatar(hue: device.hue, type: device.type, size: 42)
+            : null,
+        body: PickerSheetBody(
+          device: device,
+          onConfirm: (result) => ref
+              .read(transferFlowProvider.notifier)
+              .confirmPicker(result.items, result.device),
         ),
+        onClose: () => ref.read(transferFlowProvider.notifier).cancel(),
+      ),
       TransferRecipient(:final items) => _SheetOverlay(
-          title: 'انتخاب گیرنده',
-          subtitle:
-              '${toFa(items.length)} مورد · ${fmtMB(_totalMb(items))} آماده‌ی ارسال',
-          body: RecipientSheetBody(
-            items: items,
-            onPick: (device) =>
-                ref.read(transferFlowProvider.notifier).pickRecipient(
-                      device,
-                      items,
-                    ),
-          ),
-          onClose: () => ref.read(transferFlowProvider.notifier).cancel(),
+        title: 'انتخاب گیرنده',
+        subtitle:
+            '${toFa(items.length)} مورد · ${fmtMB(_totalMb(items))} آماده‌ی ارسال',
+        body: RecipientSheetBody(
+          items: items,
+          onPick: (device) => ref
+              .read(transferFlowProvider.notifier)
+              .pickRecipient(device, items),
         ),
+        onClose: () => ref.read(transferFlowProvider.notifier).cancel(),
+      ),
       TransferIncoming(:final request) => _DialogOverlay(
-          request: request,
-          onAccept: () =>
-              ref.read(transferFlowProvider.notifier).acceptIncoming(request),
-          onDecline: () =>
-              ref.read(transferFlowProvider.notifier).declineIncoming(),
-        ),
+        request: request,
+        onAccept: () =>
+            ref.read(transferFlowProvider.notifier).acceptIncoming(request),
+        onDecline: () =>
+            ref.read(transferFlowProvider.notifier).declineIncoming(),
+      ),
       TransferIdle() => const SizedBox.shrink(),
     };
   }
@@ -212,8 +204,9 @@ class _SheetOverlayState extends State<_SheetOverlay> {
                           padding: const EdgeInsets.only(top: 2),
                           child: Text(
                             widget.subtitle!,
-                            style: AppTextStyles.sheetSub
-                                .copyWith(color: c.muted),
+                            style: AppTextStyles.sheetSub.copyWith(
+                              color: c.muted,
+                            ),
                           ),
                         ),
                     ],
@@ -386,8 +379,9 @@ class _DialogOverlayState extends State<_DialogOverlay> {
                                         ),
                                         Text(
                                           it.size,
-                                          style: AppTextStyles.fileSub
-                                              .copyWith(color: c.muted),
+                                          style: AppTextStyles.fileSub.copyWith(
+                                            color: c.muted,
+                                          ),
                                         ),
                                       ],
                                     ),

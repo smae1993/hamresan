@@ -4,26 +4,45 @@ import '../domain/repositories/network_repository.dart';
 class NetworkRepositoryImpl implements NetworkRepository {
   @override
   Future<NetworkInfo> getInfo() async {
-    var ip = '۱۹۲٫۱۶۸٫۱٫۲۴';
+    var ip = '';
+    var ifaceName = '';
+
     try {
       final interfaces = await NetworkInterface.list();
       for (final iface in interfaces) {
+        if (ifaceName.isEmpty) ifaceName = iface.name;
         for (final addr in iface.addresses) {
           if (addr.type == InternetAddressType.IPv4 &&
-              addr.address.startsWith('192.') ||
-              addr.address.startsWith('10.') ||
-              addr.address.startsWith('172.')) {
-            ip = _toFa(addr.address);
+              _isPrivate(addr.address)) {
+            if (ip.isEmpty) ip = _toFa(addr.address);
           }
         }
       }
     } catch (_) {}
 
-    return NetworkInfo(
-      ssid: 'Home-WiFi-5G',
-      ip: ip,
-      encrypted: true,
-    );
+    var ssid = await _detectSsid() ?? ifaceName;
+    if (ip.isEmpty) ip = '۱۹۲٫۱۶۸٫۱٫۲۴';
+    if (ssid.isEmpty) ssid = 'Home-WiFi-5G';
+
+    return NetworkInfo(ssid: ssid, ip: ip, encrypted: true);
+  }
+
+  bool _isPrivate(String addr) =>
+      addr.startsWith('192.') ||
+      addr.startsWith('10.') ||
+      addr.startsWith('172.') ||
+      addr.startsWith('169.254.');
+
+  Future<String?> _detectSsid() async {
+    try {
+      final result = await Process.run(
+        'sh',
+        ['-c', 'iwgetid -r 2>/dev/null || nmcli -t -f active,ssid dev wifi 2>/dev/null | grep "^yes:" | cut -d: -f2 || echo ""'],
+      );
+      final out = (result.stdout as String).trim();
+      if (out.isNotEmpty) return out;
+    } catch (_) {}
+    return null;
   }
 
   String _toFa(String eng) => eng

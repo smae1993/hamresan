@@ -4,6 +4,7 @@
 /// 4 segmented tabs (عکس / فیلم / فایل / برنامه), a media grid for photos &
 /// videos, a file list for files & apps, multi-select, and a footer button
 /// showing count + total size.
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_gradients.dart';
@@ -49,7 +50,12 @@ Future<PickerResult?> showContentPicker(
 }
 
 class PickerSheetBody extends ConsumerStatefulWidget {
-  const PickerSheetBody({super.key, this.device, this.onConfirm, this.onCancel});
+  const PickerSheetBody({
+    super.key,
+    this.device,
+    this.onConfirm,
+    this.onCancel,
+  });
 
   final Device? device;
   final void Function(PickerResult)? onConfirm;
@@ -64,12 +70,10 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
   final _selected = <String, ContentItem>{};
   final _contentCache = <ContentKind, List<ContentItem>>{};
 
-  static const _tabs = [
-    SegmentedItem(label: 'عکس', icon: AppIconName.image),
-    SegmentedItem(label: 'فیلم', icon: AppIconName.video),
-    SegmentedItem(label: 'فایل', icon: AppIconName.file),
-    SegmentedItem(label: 'برنامه', icon: AppIconName.apps),
-  ];
+  List<_TabDef> get _tabs {
+    final type = widget.device?.type ?? 'phone';
+    return _tabDefs(type);
+  }
 
   @override
   void initState() {
@@ -79,7 +83,7 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
 
   Future<void> _loadContent() async {
     final repo = ref.read(contentRepositoryProvider);
-    final kinds = [ContentKind.image, ContentKind.video, ContentKind.doc, ContentKind.app];
+    final kinds = _tabs.map((t) => t.kind).toSet();
     for (final kind in kinds) {
       final items = await repo.getByKind(kind);
       _contentCache[kind] = items;
@@ -121,15 +125,12 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
           child: SegmentedControl(
-            items: _tabs,
+            items: _tabs.map((t) => t.seg).toList(),
             selected: _tab,
             onChanged: (i) => setState(() => _tab = i),
           ),
         ),
-        SizedBox(
-          height: 326,
-          child: _buildContent(),
-        ),
+        SizedBox(height: 326, child: _buildContent()),
         // Footer
         const Divider(height: 1),
         Padding(
@@ -155,25 +156,112 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
   }
 
   Widget _buildContent() {
-    final kind = switch (_tab) {
-      0 => ContentKind.image,
-      1 => ContentKind.video,
-      2 => ContentKind.doc,
-      3 => ContentKind.app,
-      _ => ContentKind.image,
-    };
-    final items = _contentCache[kind];
+    final tabs = _tabs;
+    if (_tab >= tabs.length) return const SizedBox.shrink();
+    final def = tabs[_tab];
+    final items = _contentCache[def.kind];
     if (items == null) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (_tab == 2) {
-      return _FileList(items: items, selected: _selected, onToggle: _toggle);
+    if (def.view == _ViewType.file) {
+      return _FileList(
+        items: items,
+        selected: _selected,
+        onToggle: _toggle,
+        isApp: def.kind == ContentKind.app,
+      );
     }
-    if (_tab == 3) {
-      return _FileList(items: items, isApp: true, selected: _selected, onToggle: _toggle);
-    }
-    return _MediaGrid(items: items, kind: kind, selected: _selected, onToggle: _toggle);
+    return _MediaGrid(
+      items: items,
+      kind: def.kind,
+      selected: _selected,
+      onToggle: _toggle,
+    );
   }
+}
+
+enum _ViewType { media, file }
+
+class _TabDef {
+  const _TabDef({required this.kind, required this.view, required this.seg});
+  final ContentKind kind;
+  final _ViewType view;
+  final SegmentedItem seg;
+}
+
+List<_TabDef> _tabDefs(String deviceType) {
+  final isDesktop = deviceType == 'laptop' || deviceType == 'desktop';
+  final isServer = deviceType == 'server';
+  final isAndroid = !isDesktop && !isServer && Platform.isAndroid;
+
+  if (isServer) {
+    return const [
+      _TabDef(
+        kind: ContentKind.doc,
+        view: _ViewType.file,
+        seg: SegmentedItem(label: 'فایل', icon: AppIconName.file),
+      ),
+      _TabDef(
+        kind: ContentKind.archive,
+        view: _ViewType.file,
+        seg: SegmentedItem(label: 'بایگانی', icon: AppIconName.archive),
+      ),
+    ];
+  }
+
+  if (isDesktop) {
+    return const [
+      _TabDef(
+        kind: ContentKind.doc,
+        view: _ViewType.file,
+        seg: SegmentedItem(label: 'فایل', icon: AppIconName.file),
+      ),
+      _TabDef(
+        kind: ContentKind.image,
+        view: _ViewType.media,
+        seg: SegmentedItem(label: 'عکس', icon: AppIconName.image),
+      ),
+      _TabDef(
+        kind: ContentKind.video,
+        view: _ViewType.media,
+        seg: SegmentedItem(label: 'فیلم', icon: AppIconName.video),
+      ),
+      _TabDef(
+        kind: ContentKind.music,
+        view: _ViewType.file,
+        seg: SegmentedItem(label: 'موزیک', icon: AppIconName.music),
+      ),
+    ];
+  }
+
+  return [
+    const _TabDef(
+      kind: ContentKind.image,
+      view: _ViewType.media,
+      seg: SegmentedItem(label: 'عکس', icon: AppIconName.image),
+    ),
+    const _TabDef(
+      kind: ContentKind.video,
+      view: _ViewType.media,
+      seg: SegmentedItem(label: 'فیلم', icon: AppIconName.video),
+    ),
+    const _TabDef(
+      kind: ContentKind.doc,
+      view: _ViewType.file,
+      seg: SegmentedItem(label: 'فایل', icon: AppIconName.file),
+    ),
+    const _TabDef(
+      kind: ContentKind.music,
+      view: _ViewType.file,
+      seg: SegmentedItem(label: 'موزیک', icon: AppIconName.music),
+    ),
+    if (isAndroid)
+      const _TabDef(
+        kind: ContentKind.app,
+        view: _ViewType.file,
+        seg: SegmentedItem(label: 'برنامه', icon: AppIconName.apps),
+      ),
+  ];
 }
 
 class _MediaGrid extends StatelessWidget {
@@ -243,13 +331,17 @@ class _MediaTile extends StatelessWidget {
                       : Border.all(color: c.border, width: 1),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: StripePlaceholder(hue: item.hue, label: item.label),
+                child: _buildPreview(),
               ),
             ),
             if (kind == ContentKind.video)
               const Positioned.fill(
                 child: Center(
-                  child: AppIcon(AppIconName.video, size: 26, color: Colors.black38),
+                  child: AppIcon(
+                    AppIconName.video,
+                    size: 26,
+                    color: Colors.black38,
+                  ),
                 ),
               ),
             if (kind == ContentKind.video && item.duration != null)
@@ -257,7 +349,10 @@ class _MediaTile extends StatelessWidget {
                 bottom: 6,
                 left: 6,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.55),
                     borderRadius: BorderRadius.circular(6),
@@ -280,13 +375,20 @@ class _MediaTile extends StatelessWidget {
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color: selected ? c.primary : Colors.black.withValues(alpha: 0.25),
+                  color: selected
+                      ? c.primary
+                      : Colors.black.withValues(alpha: 0.25),
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                 ),
                 child: selected
                     ? const Center(
-                        child: AppIcon(AppIconName.checkbold, size: 14, stroke: 3, color: Colors.white),
+                        child: AppIcon(
+                          AppIconName.checkbold,
+                          size: 14,
+                          stroke: 3,
+                          color: Colors.white,
+                        ),
                       )
                     : null,
               ),
@@ -295,6 +397,21 @@ class _MediaTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildPreview() {
+    if (kind == ContentKind.image) {
+      final file = File(item.key);
+      if (file.existsSync()) {
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) =>
+              StripePlaceholder(hue: item.hue, label: item.label),
+        );
+      }
+    }
+    return StripePlaceholder(hue: item.hue, label: item.label);
   }
 }
 
@@ -359,7 +476,12 @@ class _FileRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(13),
               ),
               child: Center(
-                child: AppIcon(item.icon, size: 22, stroke: 2, color: Colors.white),
+                child: AppIcon(
+                  item.icon,
+                  size: 22,
+                  stroke: 2,
+                  color: Colors.white,
+                ),
               ),
             ),
             const SizedBox(width: 13),
@@ -367,15 +489,26 @@ class _FileRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(item.name, style: AppTextStyles.fileName, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text(
+                    item.name,
+                    style: AppTextStyles.fileName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const SizedBox(height: 2),
                   Row(
                     children: [
                       if (isApp && item.version != null) ...[
-                        Text('نسخه ${item.version}', style: AppTextStyles.fileSub.copyWith(color: c.muted)),
+                        Text(
+                          'نسخه ${item.version}',
+                          style: AppTextStyles.fileSub.copyWith(color: c.muted),
+                        ),
                         const Text(' · ', style: AppTextStyles.fileSub),
                       ],
-                      Text(item.size, style: AppTextStyles.fileSub.copyWith(color: c.muted)),
+                      Text(
+                        item.size,
+                        style: AppTextStyles.fileSub.copyWith(color: c.muted),
+                      ),
                     ],
                   ),
                 ],
@@ -396,7 +529,12 @@ class _FileRow extends StatelessWidget {
               ),
               child: selected
                   ? const Center(
-                      child: AppIcon(AppIconName.checkbold, size: 15, stroke: 3, color: Colors.white),
+                      child: AppIcon(
+                        AppIconName.checkbold,
+                        size: 15,
+                        stroke: 3,
+                        color: Colors.white,
+                      ),
                     )
                   : null,
             ),

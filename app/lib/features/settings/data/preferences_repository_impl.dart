@@ -1,5 +1,6 @@
 /// Preferences repository implementation (SharedPreferences) — همرسان.
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/utils/default_save_path.dart';
 import '../domain/entities/app_preferences.dart';
 import '../domain/repositories/preferences_repository.dart';
 
@@ -18,7 +19,8 @@ class PreferencesRepositoryImpl implements PreferencesRepository {
     final theme = themeStr == 'dark' ? AppThemeMode.dark : AppThemeMode.light;
     final visible = _prefs.getBool(_kVisible) ?? true;
     final autoAccept = _prefs.getBool(_kAutoAccept) ?? false;
-    final savePath = _prefs.getString(_kSavePath) ?? 'دریافتی‌های همرسان';
+    final saved = _prefs.getString(_kSavePath);
+    final savePath = saved ?? await defaultSavePath();
     return AppPreferences(
       theme: theme,
       visible: visible,

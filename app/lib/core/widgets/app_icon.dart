@@ -58,7 +58,8 @@ enum AppIconName {
 const Map<AppIconName, String> _kPaths = {
   AppIconName.send: 'M12 19V5 M5 12l7-7 7 7',
   AppIconName.paperplane: 'M22 2L11 13 M22 2l-7 20-4-9-9-4 20-7z',
-  AppIconName.image: 'M3 5h18v14H3z M3 16l5-5 4 4 3-3 6 6 M8.5 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z',
+  AppIconName.image:
+      'M3 5h18v14H3z M3 16l5-5 4 4 3-3 6 6 M8.5 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z',
   AppIconName.video: 'M15 8.5v7l6-3.5-6-3.5z M3 6h12v12H3z',
   AppIconName.file: 'M14 3H6v18h12V8l-4-5z M14 3v5h4',
   AppIconName.apps: 'M4 4h6v6H4z M14 4h6v6h-6z M4 14h6v6H4z M14 14h6v6h-6z',
@@ -73,7 +74,8 @@ const Map<AppIconName, String> _kPaths = {
   AppIconName.forward: 'M15 6l-6 6 6 6',
   AppIconName.search: 'M11 19a8 8 0 100-16 8 8 0 000 16z M21 21l-4.3-4.3',
   AppIconName.wifi: 'M5 12.5a10 10 0 0114 0 M8.5 16a5 5 0 017 0 M12 19.5h.01',
-  AppIconName.shield: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z M9 12l2 2 4-4',
+  AppIconName.shield:
+      'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z M9 12l2 2 4-4',
   AppIconName.download: 'M12 3v12 M7 11l5 5 5-5 M5 21h14',
   AppIconName.bell:
       'M18 9a6 6 0 10-12 0c0 6-2 8-2 8h16s-2-2-2-8z M10 21a2 2 0 004 0',
@@ -112,23 +114,29 @@ const Map<AppIconName, String> _kPaths = {
 };
 
 /// Icons that should be drawn filled rather than stroked.
-const _kFilled = <AppIconName>{AppIconName.check, AppIconName.checkbold};
+const _kFilled = <AppIconName>{AppIconName.check};
 
 /// Builds the inline SVG string for [name].
 String iconSvg(AppIconName name, {Color? color, double stroke = 2}) {
   final raw = _kPaths[name] ?? '';
   final filled = _kFilled.contains(name);
   final argb = (color ?? const Color(0xFF000000)).toARGB32();
-  final hex = '${((argb >> 16) & 0xFF).toRadixString(16).padLeft(2, '0')}'
+  final hex =
+      '${((argb >> 16) & 0xFF).toRadixString(16).padLeft(2, '0')}'
       '${((argb >> 8) & 0xFF).toRadixString(16).padLeft(2, '0')}'
       '${(argb & 0xFF).toRadixString(16).padLeft(2, '0')}'
       '${((argb >> 24) & 0xFF).toRadixString(16).padLeft(2, '0')}';
   final fillAttr = filled ? '#$hex' : 'none';
   final strokeAttr = filled ? 'none' : '#$hex';
-  final paths = raw.split(' M').asMap().entries.map((e) {
-    final d = e.key == 0 ? e.value : 'M${e.value}';
-    return '    <path d="$d" />';
-  }).join('\n');
+  final paths = raw
+      .split(' M')
+      .asMap()
+      .entries
+      .map((e) {
+        final d = e.key == 0 ? e.value : 'M${e.value}';
+        return '    <path d="$d" />';
+      })
+      .join('\n');
   return '''
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
   fill="$fillAttr" stroke="$strokeAttr" stroke-width="$stroke"
@@ -156,7 +164,10 @@ class AppIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = color ?? IconTheme.of(context).color ?? DefaultTextStyle.of(context).style.color;
+    final c =
+        color ??
+        IconTheme.of(context).color ??
+        DefaultTextStyle.of(context).style.color;
     return SvgPicture.string(
       iconSvg(name, color: c, stroke: stroke),
       width: size,
@@ -164,4 +175,3 @@ class AppIcon extends StatelessWidget {
     );
   }
 }
-

@@ -5,6 +5,7 @@
 /// save location, network info, and a "test receive" action.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_theme.dart';
@@ -14,8 +15,13 @@ import '../../../core/widgets/app_topbar.dart';
 import '../../../core/widgets/brand_logo.dart';
 import '../../../core/widgets/segmented_control.dart';
 import '../../discovery/presentation/providers/identity_provider.dart';
+import '../../transfer/domain/entities/content_item.dart';
+import '../../transfer/domain/entities/incoming_request.dart';
+import '../../transfer/domain/enums.dart';
 import '../domain/entities/app_preferences.dart';
+import 'providers/network_info_provider.dart';
 import 'providers/preferences_provider.dart';
+import 'widgets/directory_picker.dart';
 import 'widgets/profile_card.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -25,6 +31,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final me = ref.watch(identityProvider);
     final prefs = ref.watch(preferencesProvider);
+    final netAsync = ref.watch(networkInfoProvider);
 
     return Scaffold(
       backgroundColor: context.colors.bg,
@@ -96,18 +103,30 @@ class SettingsScreen extends ConsumerWidget {
                     icon: AppIconName.folder,
                     label: 'محل ذخیره',
                     value: prefs.savePath,
-                    onTap: () {},
+                    onTap: () async {
+                      final cur = prefs.savePath;
+                      final initial = cur.isNotEmpty && cur.startsWith('/') ? cur : null;
+                      final path = await showDirectoryPicker(context, initial: initial);
+                      if (path != null && context.mounted) {
+                        await ref.read(preferencesProvider.notifier).setSavePath(path);
+                      }
+                    },
                   ),
                 ],
               ),
               _SectionHeader2(title: 'شبکه'),
               _SettingsGroup(
                 children: [
-                  _InfoRow(icon: AppIconName.wifi, label: 'شبکه', value: 'Home-WiFi-5G'),
-                  _InfoRow(
-                      icon: AppIconName.pin,
-                      label: 'نشانی IP',
-                      value: '۱۹۲٫۱۶۸٫۱٫۲۴'),
+                  netAsync.when(
+                    data: (net) => _InfoRow(icon: AppIconName.wifi, label: 'شبکه', value: net.ssid),
+                    loading: () => _InfoRow(icon: AppIconName.wifi, label: 'شبکه', value: 'در حال تشخیص...'),
+                    error: (_, __) => _InfoRow(icon: AppIconName.wifi, label: 'شبکه', value: 'خطا در تشخیص'),
+                  ),
+                  netAsync.when(
+                    data: (net) => _InfoRow(icon: AppIconName.pin, label: 'نشانی IP', value: net.ip),
+                    loading: () => _InfoRow(icon: AppIconName.pin, label: 'نشانی IP', value: 'در حال تشخیص...'),
+                    error: (_, __) => _InfoRow(icon: AppIconName.pin, label: 'نشانی IP', value: 'خطا در تشخیص'),
+                  ),
                   _InfoRow(
                     icon: AppIconName.shield,
                     label: 'رمزنگاری',
@@ -129,7 +148,7 @@ class SettingsScreen extends ConsumerWidget {
                     icon: AppIconName.download,
                     label: 'آزمایش دریافت فایل',
                     caption: 'شبیه‌سازی یک درخواست ورودی',
-                    onTap: () {},
+                    onTap: () => _triggerTestReceive(ref),
                     tintedIcon: true,
                   ),
                   _InfoRow(icon: AppIconName.info, label: 'نسخه', value: '۱٫۰٫۰'),
@@ -151,6 +170,23 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _triggerTestReceive(WidgetRef ref) {
+    final request = IncomingRequest(
+      peer: 'گوشی علی',
+      hue: 200,
+      type: 'phone',
+      platform: 'Android',
+      code: 'ققنوس-۱۴',
+      items: [
+        ContentItem(key: 'test-1', name: 'غروب ساحل.jpg', kind: ContentKind.image, size: '۴٫۲ MB', hue: 24),
+        ContentItem(key: 'test-2', name: 'تولد.jpg', kind: ContentKind.image, size: '۳٫۱ MB', hue: 330),
+        ContentItem(key: 'test-3', name: 'سفر شمال.mp4', kind: ContentKind.video, size: '۸۸ MB', hue: 200),
+      ],
+      total: '۹۵٫۳ MB',
+    );
+    ref.read(incomingRepositoryProvider).trigger(request);
   }
 }
 

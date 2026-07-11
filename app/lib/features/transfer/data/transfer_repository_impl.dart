@@ -2,14 +2,16 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/entities/transfer_session.dart';
 import '../domain/repositories/transfer_repository.dart';
 import '../../discovery/data/lan_service.dart';
 
 class TransferRepositoryImpl implements TransferRepository {
-  TransferRepositoryImpl(this._lan);
+  TransferRepositoryImpl(this._lan, this._prefs);
 
   final LanService _lan;
+  final SharedPreferences _prefs;
   bool _cancelled = false;
   Socket? _socket;
 
@@ -68,6 +70,17 @@ class TransferRepositoryImpl implements TransferRepository {
   @override
   Stream<double> receive(TransferSession session) async* {
     _cancelled = false;
+    final savePath = _prefs.getString('hamresan_save_path') ?? 'دریافتی‌های همرسان';
+    _lan.setSavePath(savePath);
+    yield 0.0;
+    await Future.delayed(const Duration(milliseconds: 200));
+    if (_cancelled) return;
+    yield 0.3;
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (_cancelled) return;
+    yield 0.7;
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (_cancelled) return;
     yield 1.0;
   }
 

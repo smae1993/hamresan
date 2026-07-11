@@ -11,6 +11,7 @@ import '../../../core/utils/fa_digits.dart';
 import '../../../core/utils/size_format.dart';
 import '../../../core/widgets/app_icon.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../settings/presentation/providers/preferences_provider.dart';
 import '../domain/entities/transfer_session.dart';
 import '../domain/enums.dart';
 
@@ -51,6 +52,7 @@ class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
   Widget build(BuildContext context) {
     final c = context.colors;
     final s = widget.session;
+    final prefs = ref.watch(preferencesProvider);
     final totalMb = s.items.fold(0.0, (a, it) => a + parseMB(it.size));
     final isSent = s.direction.isSent;
 
@@ -121,7 +123,7 @@ class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
                       children: [
                         AppIcon(AppIconName.folder, size: 15, color: c.muted),
                         const SizedBox(width: 7),
-                        Text('ذخیره در «دریافتی‌های همرسان»',
+                        Text('ذخیره در «${prefs.savePath}»',
                             style: AppTextStyles.fileSub.copyWith(color: c.muted)),
                       ],
                     ),

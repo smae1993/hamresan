@@ -57,6 +57,7 @@ class LanService {
     _broadcastTimer = Timer.periodic(_broadcastInterval, (_) => _announce());
     _announce();
     _startCleanup();
+    _emitPeers();
   }
 
   void _startCleanup() {
@@ -147,53 +148,50 @@ class LanService {
     ));
   }
 
+  String _savePath = '';
+
+  void setSavePath(String path) { _savePath = path; }
+
   void _onTcp(Socket socket) {
-    _readAll(socket).then((_) => socket.close()).catchError((_) => socket.close());
+    _receiveAndSave(socket).then((_) => socket.close()).catchError((_) => socket.close());
   }
 
-  Future<void> _readAll(Socket socket) async {
-    final metaLen = await _readExact(socket, 4);
-    final metaSize = ByteData.sublistView(metaLen).getUint32(0, Endian.little);
-    await _readExact(socket, metaSize);
-    final meta = jsonDecode(utf8.decode(await _readExact(socket, metaSize))) as Map<String, dynamic>;
+  Future<void> _receiveAndSave(Socket socket) async {
+    final reader = _SocketReader(socket);
+
+    final metaLenB = await reader.read(4);
+    final metaSize = ByteData.sublistView(metaLenB).getUint32(0, Endian.little);
+    final metaB = await reader.read(metaSize);
+    final meta = jsonDecode(utf8.decode(metaB)) as Map<String, dynamic>;
     final count = meta['count'] as int;
+    final peerName = meta['peerName'] as String? ?? 'unknown';
+
+    final baseDir = _savePath.isNotEmpty ? _savePath : '.';
+    final sessionDir = '$baseDir/$peerName';
+    await Directory(sessionDir).create(recursive: true);
+
     for (var i = 0; i < count; i++) {
-      await _readExact(socket, 4);
-      final nameLen = ByteData.sublistView(await _readExact(socket, 4)).getUint32(0, Endian.little);
-      await _readExact(socket, nameLen);
-      await _readExact(socket, 8);
-      final fileSize = ByteData.sublistView(await _readExact(socket, 8)).getUint64(0, Endian.little);
+      final nameLenB = await reader.read(4);
+      final nameLen = ByteData.sublistView(nameLenB).getUint32(0, Endian.little);
+      final nameB = await reader.read(nameLen);
+      final fileName = utf8.decode(nameB);
+
+      final sizeB = await reader.read(8);
+      final fileSize = ByteData.sublistView(sizeB).getUint64(0, Endian.little);
+
+      final file = File('$sessionDir/$fileName');
+      await file.create(recursive: true);
+      final sink = file.openWrite();
       var remaining = fileSize;
       while (remaining > 0) {
-        final chunk = await _readExact(socket, remaining < 65536 ? remaining.toInt() : 65536);
+        final chunk = await reader.read(remaining < 65536 ? remaining.toInt() : 65536);
+        sink.add(chunk);
         remaining -= chunk.length;
       }
+      await sink.flush();
+      await sink.close();
     }
-  }
-
-  Future<Uint8List> _readExact(Socket socket, int len) async {
-    final completer = Completer<Uint8List>();
-    final parts = <Uint8List>[];
-    var remaining = len;
-    socket.listen(
-      (data) {
-        parts.add(data);
-        remaining -= data.length;
-        if (remaining <= 0 && !completer.isCompleted) {
-          final total = Uint8List(len);
-          var off = 0;
-          for (final p in parts) {
-            total.setRange(off, off + p.length, p);
-            off += p.length;
-          }
-          completer.complete(total);
-        }
-      },
-      onError: (e) { if (!completer.isCompleted) completer.completeError(e); },
-      onDone: () { if (!completer.isCompleted) completer.complete(Uint8List(0)); },
-      cancelOnError: false,
-    );
-    return completer.future;
+    reader.dispose();
   }
 
   Future<Stream<double>> sendTransfer(TransferSession session, InternetAddress addr, int port) async {
@@ -310,4 +308,56 @@ class _PeerEntry {
   final InternetAddress addr;
   final int port;
   DateTime lastSeen;
+}
+
+class _SocketReader {
+  _SocketReader(Socket socket)
+      : _queue = <Uint8List>[],
+        _done = false {
+    _sub = socket.listen(
+      (data) { _queue.add(data); _completer?.complete(); },
+      onError: (e) { _error = e; _completer?.completeError(e); },
+      onDone: () { _done = true; _completer?.complete(); },
+      cancelOnError: false,
+    );
+  }
+
+  late final StreamSubscription<Uint8List> _sub;
+  final List<Uint8List> _queue;
+  Completer<void>? _completer;
+  Object? _error;
+  bool _done;
+
+  Future<Uint8List> read(int len) async {
+    final parts = <Uint8List>[];
+    var remaining = len;
+    while (remaining > 0) {
+      if (_queue.isEmpty) {
+        if (_done) return Uint8List(0);
+        if (_error != null) throw _error!;
+        _completer = Completer<void>();
+        await _completer!.future;
+        _completer = null;
+        if (_error != null) throw _error!;
+      }
+      final data = _queue.removeAt(0);
+      if (data.length <= remaining) {
+        parts.add(data);
+        remaining -= data.length;
+      } else {
+        parts.add(data.sublist(0, remaining));
+        _queue.insert(0, data.sublist(remaining));
+        remaining = 0;
+      }
+    }
+    final total = Uint8List(len);
+    var off = 0;
+    for (final p in parts) {
+      total.setRange(off, off + p.length, p);
+      off += p.length;
+    }
+    return total;
+  }
+
+  void dispose() { _sub.cancel(); }
 }

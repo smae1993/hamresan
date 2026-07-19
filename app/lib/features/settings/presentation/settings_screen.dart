@@ -417,9 +417,7 @@ class _SetIcon extends StatelessWidget {
         color: c.surface2,
         borderRadius: BorderRadius.circular(11),
       ),
-      child: Center(
-        child: AppIcon(icon, size: 19, color: c.primary),
-      ),
+      child: Center(child: AppIcon(icon, size: 19, color: c.primary)),
     );
   }
 }

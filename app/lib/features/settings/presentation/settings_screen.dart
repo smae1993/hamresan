@@ -404,9 +404,8 @@ class _NavRow extends StatelessWidget {
 }
 
 class _SetIcon extends StatelessWidget {
-  const _SetIcon({required this.icon, this.tinted = false});
+  const _SetIcon({required this.icon});
   final AppIconName icon;
-  final bool tinted;
 
   @override
   Widget build(BuildContext context) {
@@ -415,11 +414,11 @@ class _SetIcon extends StatelessWidget {
       width: 38,
       height: 38,
       decoration: BoxDecoration(
-        color: tinted ? c.primarySoft : c.surface2,
+        color: c.surface2,
         borderRadius: BorderRadius.circular(11),
       ),
       child: Center(
-        child: AppIcon(icon, size: 19, color: tinted ? c.primary : c.primary),
+        child: AppIcon(icon, size: 19, color: c.primary),
       ),
     );
   }

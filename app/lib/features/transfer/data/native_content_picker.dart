@@ -9,7 +9,7 @@ import '../domain/enums.dart';
 class NativeContentPicker {
   Future<List<ContentItem>> pick(ContentKind kind) async {
     final options = _options(kind);
-    final result = await FilePicker.pickFiles(
+    final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: options.type,
       allowedExtensions: options.extensions,

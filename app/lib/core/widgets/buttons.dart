@@ -1,7 +1,7 @@
-/// Buttons — همرسان.
-///
-/// Recreates the `.btn` family from `styles.css`:
-/// `.btn-primary`, `.btn-ghost`, `.btn-grad`, `.btn-block`, `.btn-lg`, `.fab`.
+// Buttons — همرسان.
+//
+// Recreates the `.btn` family from `styles.css`:
+// `.btn-primary`, `.btn-ghost`, `.btn-grad`, `.btn-block`, `.btn-lg`, `.fab`.
 import 'package:flutter/material.dart';
 import '../theme/app_gradients.dart';
 import '../theme/app_text_styles.dart';
@@ -47,15 +47,17 @@ class _AppButtonState extends State<AppButton> {
     final (bg, fg, shadow) = switch (widget.variant) {
       AppButtonVariant.primary => (c.primary, c.primaryInk, AppShadows.fab(c)),
       AppButtonVariant.grad => (
-          Colors.transparent,
-          Colors.white,
-          AppShadows.fab(c),
-        ),
+        Colors.transparent,
+        Colors.white,
+        AppShadows.fab(c),
+      ),
       AppButtonVariant.ghost => (c.surface2, c.text, <BoxShadow>[]),
     };
 
     final content = DefaultTextStyle.merge(
-      style: (large ? AppTextStyles.btnLg : AppTextStyles.btn).copyWith(color: fg),
+      style: (large ? AppTextStyles.btnLg : AppTextStyles.btn).copyWith(
+        color: fg,
+      ),
       child: widget.child,
     );
 
@@ -79,7 +81,9 @@ class _AppButtonState extends State<AppButton> {
           opacity: disabled ? 0.5 : 1,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-            constraints: BoxConstraints(minWidth: widget.block ? double.infinity : 0),
+            constraints: BoxConstraints(
+              minWidth: widget.block ? double.infinity : 0,
+            ),
             decoration: BoxDecoration(
               gradient: widget.variant == AppButtonVariant.grad
                   ? AppGradients.brand(c)
@@ -96,7 +100,12 @@ class _AppButtonState extends State<AppButton> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (widget.icon != null) ...[
-                  AppIcon(widget.icon!, size: large ? 20 : 19, stroke: 2.4, color: fg),
+                  AppIcon(
+                    widget.icon!,
+                    size: large ? 20 : 19,
+                    stroke: 2.4,
+                    color: fg,
+                  ),
                   const SizedBox(width: 9),
                 ],
                 content,
@@ -179,9 +188,15 @@ class _IconButtonCircleState extends State<IconButtonCircle> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return GestureDetector(
-      onTapDown: widget.onPressed == null ? null : (_) => setState(() => _pressed = true),
-      onTapUp: widget.onPressed == null ? null : (_) => setState(() => _pressed = false),
-      onTapCancel: widget.onPressed == null ? null : () => setState(() => _pressed = false),
+      onTapDown: widget.onPressed == null
+          ? null
+          : (_) => setState(() => _pressed = true),
+      onTapUp: widget.onPressed == null
+          ? null
+          : (_) => setState(() => _pressed = false),
+      onTapCancel: widget.onPressed == null
+          ? null
+          : () => setState(() => _pressed = false),
       onTap: widget.onPressed,
       child: AnimatedScale(
         scale: _pressed ? 0.9 : 1,

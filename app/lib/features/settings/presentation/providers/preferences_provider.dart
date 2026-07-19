@@ -1,7 +1,7 @@
-/// Preferences provider — همرسان.
-///
-/// Loads and persists [AppPreferences]. Exposes theme/visible/autoAccept
-/// mutations that write-through to the repository.
+// Preferences provider — همرسان.
+//
+// Loads and persists [AppPreferences]. Exposes theme/visible/autoAccept
+// mutations that write-through to the repository.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/providers/repository_providers.dart';
 import '../../domain/entities/app_preferences.dart';
@@ -47,5 +47,5 @@ class PreferencesNotifier extends StateNotifier<AppPreferences> {
 
 final preferencesProvider =
     StateNotifierProvider<PreferencesNotifier, AppPreferences>((ref) {
-  return PreferencesNotifier(ref.watch(preferencesRepositoryProvider));
-});
+      return PreferencesNotifier(ref.watch(preferencesRepositoryProvider));
+    });

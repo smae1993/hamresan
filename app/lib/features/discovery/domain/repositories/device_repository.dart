@@ -1,7 +1,7 @@
-/// Device discovery repository contract — همرسان.
-///
-/// Abstract interface so the discovery implementation (mock today, real mDNS
-/// / NSD later) can be swapped without touching the presentation layer.
+// Device discovery repository contract — همرسان.
+//
+// Abstract interface so the discovery implementation (mock today, real mDNS
+// / NSD later) can be swapped without touching the presentation layer.
 import '../entities/device.dart';
 
 abstract class DeviceRepository {

@@ -10,9 +10,4 @@ class IncomingRepositoryImpl implements IncomingRepository {
 
   @override
   Stream<IncomingRequest?> watch() => _lan.incomingStream;
-
-  @override
-  void trigger(IncomingRequest request) {
-    _lan.triggerIncoming(request);
-  }
 }

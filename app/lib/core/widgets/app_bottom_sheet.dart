@@ -1,8 +1,8 @@
-/// Bottom sheet scaffold — همرسان.
-///
-/// Recreates the `.scrim`/`.sheet` pattern from `styles.css`: a dark blurred
-/// scrim with a rounded sheet sliding up from the bottom, a drag grip, an
-/// optional header (icon + title + subtitle + close) and a sticky footer.
+// Bottom sheet scaffold — همرسان.
+//
+// Recreates the `.scrim`/`.sheet` pattern from `styles.css`: a dark blurred
+// scrim with a rounded sheet sliding up from the bottom, a drag grip, an
+// optional header (icon + title + subtitle + close) and a sticky footer.
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dimensions.dart';

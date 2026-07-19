@@ -1,8 +1,8 @@
-/// Section header — همرسان.
-///
-/// Recreates `.sec-head` from `styles.css`: a section title with an optional
-/// count badge, a flexible spacer, and optional trailing widget (e.g. the
-/// "در حال جستجو" scanning indicator).
+// Section header — همرسان.
+//
+// Recreates `.sec-head` from `styles.css`: a section title with an optional
+// count badge, a flexible spacer, and optional trailing widget (e.g. the
+// "در حال جستجو" scanning indicator).
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
@@ -59,7 +59,7 @@ class _CountBadge extends StatelessWidget {
         border: Border.all(color: c.primarySoftBd),
       ),
       child: Text(
-        '${count}', // digit conversion applied by callers via toFa()
+        '$count', // digit conversion applied by callers via toFa()
         style: AppTextStyles.countBadge.copyWith(color: c.primary),
       ),
     );
@@ -105,14 +105,19 @@ class _ScanningIndicatorState extends State<ScanningIndicator>
           style: AppTextStyles.scanning.copyWith(color: c.muted),
         ),
         const SizedBox(width: 5),
-        for (var i = 0; i < 3; i++) _Dot(controller: _c, delay: i * 0.2, color: c.primary),
+        for (var i = 0; i < 3; i++)
+          _Dot(controller: _c, delay: i * 0.2, color: c.primary),
       ],
     );
   }
 }
 
 class _Dot extends StatelessWidget {
-  const _Dot({required this.controller, required this.delay, required this.color});
+  const _Dot({
+    required this.controller,
+    required this.delay,
+    required this.color,
+  });
   final AnimationController controller;
   final double delay;
   final Color color;

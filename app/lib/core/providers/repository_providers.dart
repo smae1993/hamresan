@@ -22,7 +22,9 @@ import '../../features/transfer/data/incoming_repository_impl.dart';
 import '../../features/transfer/data/transfer_repository_impl.dart';
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError('sharedPreferencesProvider must be overridden in main()');
+  throw UnimplementedError(
+    'sharedPreferencesProvider must be overridden in main()',
+  );
 });
 
 final lanServiceProvider = Provider<LanService>((ref) {
@@ -31,24 +33,28 @@ final lanServiceProvider = Provider<LanService>((ref) {
   return service;
 });
 
+final lanStatusProvider = StreamProvider<LanStatus>((ref) {
+  return ref.watch(lanServiceProvider).statusStream;
+});
+
 final deviceRepositoryProvider = Provider<DeviceRepository>((ref) {
   return DeviceRepositoryImpl(ref.watch(lanServiceProvider));
 });
 
 final identityRepositoryProvider = Provider<IdentityRepository>((ref) {
-  return IdentityRepositoryImpl(prefs: ref.watch(sharedPreferencesProvider));
+  return IdentityRepositoryImpl(ref.watch(sharedPreferencesProvider));
 });
 
 final historyRepositoryProvider = Provider<HistoryRepository>((ref) {
-  return HistoryRepositoryImpl(prefs: ref.watch(sharedPreferencesProvider));
+  return HistoryRepositoryImpl(ref.watch(sharedPreferencesProvider));
 });
 
 final onboardingRepositoryProvider = Provider<OnboardingRepository>((ref) {
-  return OnboardingRepositoryImpl(prefs: ref.watch(sharedPreferencesProvider));
+  return OnboardingRepositoryImpl(ref.watch(sharedPreferencesProvider));
 });
 
 final preferencesRepositoryProvider = Provider<PreferencesRepository>((ref) {
-  return PreferencesRepositoryImpl(prefs: ref.watch(sharedPreferencesProvider));
+  return PreferencesRepositoryImpl(ref.watch(sharedPreferencesProvider));
 });
 
 final networkRepositoryProvider = Provider<NetworkRepository>((ref) {
@@ -68,5 +74,5 @@ final incomingStreamProvider = StreamProvider<IncomingRequest?>((ref) {
 });
 
 final transferRepositoryProvider = Provider<TransferRepository>((ref) {
-  return TransferRepositoryImpl(ref.watch(lanServiceProvider), ref.watch(sharedPreferencesProvider));
+  return TransferRepositoryImpl(ref.watch(lanServiceProvider));
 });

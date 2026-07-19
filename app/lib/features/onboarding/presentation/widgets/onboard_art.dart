@@ -1,7 +1,7 @@
-/// Onboarding art — همرسان.
-///
-/// Recreates `OnboardArt` from `screens_home.jsx`: three animated illustrations
-/// shown behind each onboarding step (radar sweep / content type cards / shield).
+// Onboarding art — همرسان.
+//
+// Recreates `OnboardArt` from `screens_home.jsx`: three animated illustrations
+// shown behind each onboarding step (radar sweep / content type cards / shield).
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_gradients.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -44,10 +44,8 @@ class _RadarArtState extends State<_RadarArt>
   @override
   void initState() {
     super.initState();
-    _c = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat();
+    _c = AnimationController(vsync: this, duration: const Duration(seconds: 3))
+      ..repeat();
   }
 
   @override
@@ -113,7 +111,12 @@ class _RadarArtState extends State<_RadarArt>
 }
 
 class _Peer {
-  const _Peer({required this.hue, required this.dx, required this.dy, required this.type});
+  const _Peer({
+    required this.hue,
+    required this.dx,
+    required this.dy,
+    required this.type,
+  });
   final double hue;
   final double dx;
   final double dy;
@@ -196,7 +199,12 @@ class _ShieldArt extends StatelessWidget {
         boxShadow: AppShadows.lg(c),
       ),
       child: Center(
-        child: AppIcon(AppIconName.shield, size: 74, stroke: 1.7, color: Colors.white),
+        child: AppIcon(
+          AppIconName.shield,
+          size: 74,
+          stroke: 1.7,
+          color: Colors.white,
+        ),
       ),
     );
   }

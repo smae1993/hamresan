@@ -34,7 +34,7 @@ class ContentScanner {
               key: path,
               name: name,
               kind: kind,
-              size: _fmtBytes(stat.size),
+              byteSize: stat.size,
               hue: rng.nextDouble() * 360,
             ),
           );
@@ -186,8 +186,8 @@ class ContentScanner {
         'apk',
         'app',
         'exe',
-        'AppImage',
-        'App',
+        'appimage',
+        'app',
         'dmg',
       ]),
     };
@@ -204,11 +204,5 @@ class ContentScanner {
     } catch (_) {
       return '/sdcard';
     }
-  }
-
-  String _fmtBytes(int bytes) {
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 }

@@ -1,4 +1,4 @@
-/// Onboarding provider — همرسان.
+// Onboarding provider — همرسان.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/providers/repository_providers.dart';
 import '../../domain/repositories/onboarding_repository.dart';
@@ -25,7 +25,8 @@ class OnboardingNotifier extends StateNotifier<bool> {
   }
 }
 
-final onboardingProvider =
-    StateNotifierProvider<OnboardingNotifier, bool>((ref) {
+final onboardingProvider = StateNotifierProvider<OnboardingNotifier, bool>((
+  ref,
+) {
   return OnboardingNotifier(ref.watch(onboardingRepositoryProvider));
 });

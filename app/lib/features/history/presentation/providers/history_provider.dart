@@ -1,6 +1,6 @@
-/// History provider — همرسان.
-///
-/// Loads transfer history and supports adding a record after a transfer.
+// History provider — همرسان.
+//
+// Loads transfer history and supports adding a record after a transfer.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/providers/repository_providers.dart';
 import '../../domain/entities/transfer_record.dart';
@@ -30,5 +30,5 @@ class HistoryNotifier extends StateNotifier<List<TransferRecord>> {
 
 final historyProvider =
     StateNotifierProvider<HistoryNotifier, List<TransferRecord>>((ref) {
-  return HistoryNotifier(ref.watch(historyRepositoryProvider));
-});
+      return HistoryNotifier(ref.watch(historyRepositoryProvider));
+    });

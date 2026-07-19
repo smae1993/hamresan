@@ -1,7 +1,7 @@
-/// History screen — همرسان.
-///
-/// Recreates `History` from `screens_misc.jsx`: filter chips (همه / ارسالی /
-/// دریافتی) and a list of transfer records. Empty state when filtered to none.
+// History screen — همرسان.
+//
+// Recreates `History` from `screens_misc.jsx`: filter chips (همه / ارسالی /
+// دریافتی) and a list of transfer records. Empty state when filtered to none.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_dimensions.dart';
@@ -49,9 +49,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 4, 20, 0).copyWith(
-                  bottom: AppDimensions.navHeight + 20,
-                ),
+                padding: const EdgeInsets.fromLTRB(
+                  20,
+                  4,
+                  20,
+                  0,
+                ).copyWith(bottom: AppDimensions.navHeight + 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -138,9 +141,26 @@ class _HistoryRow extends StatelessWidget {
                   TextSpan(
                     style: AppTextStyles.historySub.copyWith(color: c.muted),
                     children: [
-                      TextSpan(text: '${isSent ? "ارسال" : "دریافت"} · ${record.summary}'),
+                      TextSpan(
+                        text:
+                            '${isSent ? "ارسال" : "دریافت"} · ${record.summary}',
+                      ),
                       if (record.status == TransferStatus.failed)
-                        TextSpan(text: ' · ناموفق', style: TextStyle(color: c.rose, fontWeight: FontWeight.w700)),
+                        TextSpan(
+                          text: ' · ناموفق',
+                          style: TextStyle(
+                            color: c.rose,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      if (record.status == TransferStatus.cancelled)
+                        TextSpan(
+                          text: ' · لغوشده',
+                          style: TextStyle(
+                            color: c.muted,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -151,9 +171,19 @@ class _HistoryRow extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(record.when, style: AppTextStyles.historyTime.copyWith(color: c.faint)),
+              Text(
+                record.when,
+                style: AppTextStyles.historyTime.copyWith(color: c.faint),
+              ),
               const SizedBox(height: 3),
-              Text(record.size, style: AppTextStyles.historyTime.copyWith(color: c.muted, fontSize: 12, fontWeight: FontWeight.w700)),
+              Text(
+                record.size,
+                style: AppTextStyles.historyTime.copyWith(
+                  color: c.muted,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ],
           ),
         ],
@@ -186,10 +216,16 @@ class _EmptyState extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Text('چیزی اینجا نیست', style: AppTextStyles.emptyTitle.copyWith(color: c.text)),
+            Text(
+              'چیزی اینجا نیست',
+              style: AppTextStyles.emptyTitle.copyWith(color: c.text),
+            ),
             const SizedBox(height: 6),
-            Text('هنوز انتقالی در این دسته نداری.',
-                style: AppTextStyles.emptyBody.copyWith(color: c.muted), textAlign: TextAlign.center),
+            Text(
+              'هنوز انتقالی در این دسته نداری.',
+              style: AppTextStyles.emptyBody.copyWith(color: c.muted),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

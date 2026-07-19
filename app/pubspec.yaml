@@ -19,6 +19,10 @@ dependencies:
   flutter_svg: ^2.0.17
   shared_preferences: ^2.3.5
   path_provider: ^2.1.5
+  crypto: ^3.0.6
+  # 11.0.x does not compile its Android Kotlin sources; keep the last fixed
+  # 10.x release until the upstream regression is resolved.
+  file_picker: 10.3.10
 
 dev_dependencies:
   flutter_test:
@@ -29,9 +33,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  assets:
-    - assets/icons/
 
   fonts:
     - family: Vazirmatn

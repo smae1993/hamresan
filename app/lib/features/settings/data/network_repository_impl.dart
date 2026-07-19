@@ -21,10 +21,10 @@ class NetworkRepositoryImpl implements NetworkRepository {
     } catch (_) {}
 
     var ssid = await _detectSsid() ?? ifaceName;
-    if (ip.isEmpty) ip = '۱۹۲٫۱۶۸٫۱٫۲۴';
-    if (ssid.isEmpty) ssid = 'Home-WiFi-5G';
+    if (ip.isEmpty) ip = 'نامشخص';
+    if (ssid.isEmpty) ssid = 'نامشخص';
 
-    return NetworkInfo(ssid: ssid, ip: ip, encrypted: true);
+    return NetworkInfo(ssid: ssid, ip: ip, encrypted: false);
   }
 
   bool _isPrivate(String addr) =>
@@ -35,10 +35,10 @@ class NetworkRepositoryImpl implements NetworkRepository {
 
   Future<String?> _detectSsid() async {
     try {
-      final result = await Process.run(
-        'sh',
-        ['-c', 'iwgetid -r 2>/dev/null || nmcli -t -f active,ssid dev wifi 2>/dev/null | grep "^yes:" | cut -d: -f2 || echo ""'],
-      );
+      final result = await Process.run('sh', [
+        '-c',
+        'iwgetid -r 2>/dev/null || nmcli -t -f active,ssid dev wifi 2>/dev/null | grep "^yes:" | cut -d: -f2 || echo ""',
+      ]);
       final out = (result.stdout as String).trim();
       if (out.isNotEmpty) return out;
     } catch (_) {}
@@ -47,16 +47,18 @@ class NetworkRepositoryImpl implements NetworkRepository {
 
   String _toFa(String eng) => eng
       .split('.')
-      .map((octet) => octet
-          .replaceAll('0', '۰')
-          .replaceAll('1', '۱')
-          .replaceAll('2', '۲')
-          .replaceAll('3', '۳')
-          .replaceAll('4', '۴')
-          .replaceAll('5', '۵')
-          .replaceAll('6', '۶')
-          .replaceAll('7', '۷')
-          .replaceAll('8', '۸')
-          .replaceAll('9', '۹'))
+      .map(
+        (octet) => octet
+            .replaceAll('0', '۰')
+            .replaceAll('1', '۱')
+            .replaceAll('2', '۲')
+            .replaceAll('3', '۳')
+            .replaceAll('4', '۴')
+            .replaceAll('5', '۵')
+            .replaceAll('6', '۶')
+            .replaceAll('7', '۷')
+            .replaceAll('8', '۸')
+            .replaceAll('9', '۹'),
+      )
       .join('٫');
 }

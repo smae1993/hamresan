@@ -2,9 +2,6 @@
 ///
 /// Shared enumerations used across features (device types, content kinds,
 /// transfer direction, history status).
-import 'package:flutter/material.dart';
-import '../../../core/widgets/app_icon.dart';
-
 /// Kind of a remote device.
 enum DeviceType { phone, laptop, desktop, tablet, server }
 
@@ -22,24 +19,6 @@ DeviceType deviceTypeFromString(String? s) {
       return DeviceType.server;
     default:
       return DeviceType.phone;
-  }
-}
-
-/// Icon name for a device type string.
-AppIconName deviceIcon(String type) {
-  switch (type) {
-    case 'phone':
-      return AppIconName.phone;
-    case 'laptop':
-      return AppIconName.laptop;
-    case 'desktop':
-      return AppIconName.desktop;
-    case 'tablet':
-      return AppIconName.tablet;
-    case 'server':
-      return AppIconName.server;
-    default:
-      return AppIconName.phone;
   }
 }
 
@@ -84,14 +63,3 @@ extension TransferStatusX on TransferStatus {
   bool get isFailed => this == TransferStatus.failed;
   bool get isCancelled => this == TransferStatus.cancelled;
 }
-
-/// Semantic color for a content kind (used by icons in lists).
-Color kindTint(ContentKind kind) => switch (kind) {
-      ContentKind.image => const Color(0xFFE07A3C),
-      ContentKind.video => const Color(0xFF0083B7),
-      ContentKind.doc => const Color(0xFFE07A3C),
-      ContentKind.music => const Color(0xFF8752C1),
-      ContentKind.archive => const Color(0xFFA16200),
-      ContentKind.contact => const Color(0xFF0083B7),
-      ContentKind.app => const Color(0xFF8752C1),
-    };

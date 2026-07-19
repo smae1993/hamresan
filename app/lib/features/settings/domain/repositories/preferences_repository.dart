@@ -1,4 +1,4 @@
-/// Preferences repository contract — همرسان.
+// Preferences repository contract — همرسان.
 import '../entities/app_preferences.dart';
 
 abstract class PreferencesRepository {

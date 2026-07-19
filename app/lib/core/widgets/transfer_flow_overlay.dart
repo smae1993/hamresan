@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/transfer/domain/entities/content_item.dart';
 import '../../features/transfer/domain/entities/incoming_request.dart';
 import '../../features/transfer/presentation/content_picker_sheet.dart';
+import '../../features/transfer/presentation/content_item_icon.dart';
 
 import '../../features/transfer/presentation/providers/transfer_provider.dart';
 import '../../features/transfer/presentation/recipient_sheet.dart';
@@ -68,7 +69,7 @@ class _TransferFlowOverlayState extends ConsumerState<TransferFlowOverlay> {
       TransferRecipient(:final items) => _SheetOverlay(
         title: 'انتخاب گیرنده',
         subtitle:
-            '${toFa(items.length)} مورد · ${fmtMB(_totalMb(items))} آماده‌ی ارسال',
+            '${toFa(items.length)} مورد · ${formatBytes(_totalBytes(items))} آماده‌ی ارسال',
         body: RecipientSheetBody(
           items: items,
           onPick: (device) => ref
@@ -82,14 +83,19 @@ class _TransferFlowOverlayState extends ConsumerState<TransferFlowOverlay> {
         onAccept: () =>
             ref.read(transferFlowProvider.notifier).acceptIncoming(request),
         onDecline: () =>
-            ref.read(transferFlowProvider.notifier).declineIncoming(),
+            ref.read(transferFlowProvider.notifier).declineIncoming(request),
+      ),
+      TransferFailed(:final session, :final message) => _FailureOverlay(
+        peerName: session.peerName,
+        message: message,
+        onClose: () => ref.read(transferFlowProvider.notifier).finish(),
       ),
       TransferIdle() => const SizedBox.shrink(),
     };
   }
 
-  double _totalMb(List<ContentItem> items) =>
-      items.fold(0.0, (a, it) => a + parseMB(it.size));
+  int _totalBytes(List<ContentItem> items) =>
+      items.fold(0, (sum, item) => sum + item.byteSize);
 }
 
 // ────────────────────────────────────────────────────────────────────
@@ -408,7 +414,7 @@ class _DialogOverlayState extends State<_DialogOverlay> {
                             ),
                           ),
                           Text(
-                            '${toFa(r.items.length)} مورد · ${r.total}',
+                            '${toFa(r.items.length)} مورد · ${formatBytes(r.totalBytes)}',
                             style: AppTextStyles.fileName.copyWith(
                               color: c.primary,
                               fontWeight: FontWeight.w800,
@@ -446,6 +452,77 @@ class _DialogOverlayState extends State<_DialogOverlay> {
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FailureOverlay extends StatelessWidget {
+  const _FailureOverlay({
+    required this.peerName,
+    required this.message,
+    required this.onClose,
+  });
+
+  final String peerName;
+  final String message;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final cleanMessage = message.replaceFirst(
+      RegExp(r'^[^:]+Exception:\s*'),
+      '',
+    );
+    return Container(
+      color: Colors.black.withValues(alpha: 0.5),
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(24),
+      child: Material(
+        color: colors.bg,
+        borderRadius: BorderRadius.circular(24),
+        child: Padding(
+          padding: const EdgeInsets.all(22),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: colors.rose.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Center(
+                  child: AppIcon(
+                    AppIconName.close,
+                    size: 26,
+                    color: colors.rose,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text('انتقال انجام نشد', style: AppTextStyles.sheetTitle),
+              const SizedBox(height: 8),
+              Text(
+                '$peerName\n$cleanMessage',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.sheetSub.copyWith(
+                  color: colors.muted,
+                  height: 1.6,
+                ),
+              ),
+              const SizedBox(height: 20),
+              AppButton(
+                variant: AppButtonVariant.primary,
+                block: true,
+                onPressed: onClose,
+                child: const Text('متوجه شدم'),
+              ),
+            ],
           ),
         ),
       ),

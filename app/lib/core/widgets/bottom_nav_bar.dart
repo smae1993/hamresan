@@ -1,7 +1,7 @@
-/// Bottom navigation bar — همرسان.
-///
-/// Recreates `.nav` from `styles.css`: a blurred bar with three items
-/// (اطراف / تاریخچه / تنظیمات), active item tinted with the brand color.
+// Bottom navigation bar — همرسان.
+//
+// Recreates `.nav` from `styles.css`: a blurred bar with three items
+// (اطراف / تاریخچه / تنظیمات), active item tinted with the brand color.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' show ImageFilter;
@@ -102,10 +102,18 @@ class _NavButton extends StatelessWidget {
               offset: active ? const Offset(0, -0.06) : Offset.zero,
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeOutCubic,
-              child: AppIcon(item.icon, size: 23, stroke: active ? 2.4 : 2, color: color),
+              child: AppIcon(
+                item.icon,
+                size: 23,
+                stroke: active ? 2.4 : 2,
+                color: color,
+              ),
             ),
             const SizedBox(height: 4),
-            Text(item.label, style: AppTextStyles.navLabel.copyWith(color: color)),
+            Text(
+              item.label,
+              style: AppTextStyles.navLabel.copyWith(color: color),
+            ),
           ],
         ),
       ),

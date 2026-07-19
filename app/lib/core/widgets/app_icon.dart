@@ -1,9 +1,9 @@
-/// Custom SVG icon set — همرسان.
-///
-/// Recreates `Icon`/`ICON_PATHS` from `icons.jsx`. The prototype stores each
-/// icon as one or more SVG path `d` strings (space-separated `M` segments),
-/// rendered as a 24×24 stroked SVG. Here we keep the exact same path data and
-/// render it with `SvgPicture.string`.
+// Custom SVG icon set — همرسان.
+//
+// Recreates `Icon`/`ICON_PATHS` from `icons.jsx`. The prototype stores each
+// icon as one or more SVG path `d` strings (space-separated `M` segments),
+// rendered as a 24×24 stroked SVG. Here we keep the exact same path data and
+// render it with `SvgPicture.string`.
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

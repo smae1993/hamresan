@@ -1,6 +1,6 @@
-/// Design dimension tokens — همرسان.
-///
-/// Values are ported from `styles.css` (radii, nav height, paddings, etc.).
+// Design dimension tokens — همرسان.
+//
+// Values are ported from `styles.css` (radii, nav height, paddings, etc.).
 import 'package:flutter/widgets.dart';
 
 class AppDimensions {

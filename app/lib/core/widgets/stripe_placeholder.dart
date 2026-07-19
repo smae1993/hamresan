@@ -1,7 +1,7 @@
-/// Striped media placeholder — همرسان.
-///
-/// Recreates `StripePlaceholder` from `icons.jsx`: a 135deg repeating stripe
-/// used for photo/video thumbnails in the picker and transfer lists.
+// Striped media placeholder — همرسان.
+//
+// Recreates `StripePlaceholder` from `icons.jsx`: a 135deg repeating stripe
+// used for photo/video thumbnails in the picker and transfer lists.
 import 'package:flutter/material.dart';
 import '../theme/app_gradients.dart';
 
@@ -63,7 +63,12 @@ class _StripePainter extends CustomPainter {
         paintA,
       );
       canvas.drawRect(
-        Rect.fromLTWH(x + stripe / 2, -size.height, stripe / 2, size.height * 3),
+        Rect.fromLTWH(
+          x + stripe / 2,
+          -size.height,
+          stripe / 2,
+          size.height * 3,
+        ),
         paintB,
       );
     }
@@ -71,6 +76,5 @@ class _StripePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _StripePainter old) =>
-      old.a != a || old.b != b;
+  bool shouldRepaint(covariant _StripePainter old) => old.a != a || old.b != b;
 }

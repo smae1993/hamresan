@@ -1,7 +1,6 @@
-/// Device entity — همرسان.
-///
-/// Represents a remote device discovered on the local network.
-import '../../../../core/widgets/app_icon.dart';
+// Device entity — همرسان.
+//
+// Represents a remote device discovered on the local network.
 import '../../../transfer/domain/enums.dart';
 
 class Device {
@@ -12,6 +11,7 @@ class Device {
     required this.platform,
     required this.hue,
     required this.code,
+    this.protocolVersion = 1,
   });
 
   final String id;
@@ -23,10 +23,9 @@ class Device {
   final String platform;
   final double hue;
   final String code;
+  final int protocolVersion;
 
   DeviceType get deviceType => deviceTypeFromString(type);
-  AppIconName get typeIcon => deviceIcon(type);
-
   Device copyWith({
     String? id,
     String? name,
@@ -34,13 +33,14 @@ class Device {
     String? platform,
     double? hue,
     String? code,
-  }) =>
-      Device(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        type: type ?? this.type,
-        platform: platform ?? this.platform,
-        hue: hue ?? this.hue,
-        code: code ?? this.code,
-      );
+    int? protocolVersion,
+  }) => Device(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    type: type ?? this.type,
+    platform: platform ?? this.platform,
+    hue: hue ?? this.hue,
+    code: code ?? this.code,
+    protocolVersion: protocolVersion ?? this.protocolVersion,
+  );
 }

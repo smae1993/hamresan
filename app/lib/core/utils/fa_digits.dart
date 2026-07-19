@@ -6,7 +6,10 @@ const _faDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 
 /// Converts any ASCII digits in [input] to Persian digits.
 String toFa(Object input) {
-  return input.toString().replaceAllMapped(RegExp(r'[0-9]'), (m) => _faDigits[int.parse(m[0]!)]);
+  return input.toString().replaceAllMapped(
+    RegExp(r'[0-9]'),
+    (m) => _faDigits[int.parse(m[0]!)],
+  );
 }
 
 /// Converts Persian/Arabic digits back to ASCII (used by size parsing).

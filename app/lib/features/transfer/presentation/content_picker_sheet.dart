@@ -1,9 +1,9 @@
-/// Content picker sheet — همرسان.
-///
-/// Recreates `ContentPicker` from `screens_send.jsx`: a bottom sheet with
-/// 4 segmented tabs (عکس / فیلم / فایل / برنامه), a media grid for photos &
-/// videos, a file list for files & apps, multi-select, and a footer button
-/// showing count + total size.
+// Content picker sheet — همرسان.
+//
+// Recreates `ContentPicker` from `screens_send.jsx`: a bottom sheet with
+// 4 segmented tabs (عکس / فیلم / فایل / برنامه), a media grid for photos &
+// videos, a file list for files & apps, multi-select, and a footer button
+// showing count + total size.
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +22,7 @@ import '../../../core/widgets/stripe_placeholder.dart';
 import '../../discovery/domain/entities/device.dart';
 import '../domain/entities/content_item.dart';
 import '../domain/enums.dart';
+import 'content_item_icon.dart';
 
 /// Result returned when the picker is confirmed.
 class PickerResult {
@@ -69,6 +70,7 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
   int _tab = 0;
   final _selected = <String, ContentItem>{};
   final _contentCache = <ContentKind, List<ContentItem>>{};
+  bool _picking = false;
 
   List<_TabDef> get _tabs {
     final type = widget.device?.type ?? 'phone';
@@ -114,10 +116,39 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
     }
   }
 
+  Future<void> _pickFromDevice() async {
+    if (_picking || _tab >= _tabs.length) return;
+    setState(() => _picking = true);
+    try {
+      final kind = _tabs[_tab].kind;
+      final picked = await ref.read(contentRepositoryProvider).pickByKind(kind);
+      if (!mounted || picked.isEmpty) return;
+      setState(() {
+        final existing = {
+          for (final item in _contentCache[kind] ?? const <ContentItem>[])
+            item.key: item,
+        };
+        for (final item in picked) {
+          existing[item.key] = item;
+          _selected[item.key] = item;
+        }
+        _contentCache[kind] = existing.values.toList();
+      });
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('انتخاب فایل انجام نشد: $error')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _picking = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = _selected.values.toList();
-    final totalMb = items.fold(0.0, (a, it) => a + parseMB(it.size));
+    final totalBytes = items.fold<int>(0, (sum, item) => sum + item.byteSize);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -130,7 +161,26 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
             onChanged: (i) => setState(() => _tab = i),
           ),
         ),
-        SizedBox(height: 326, child: _buildContent()),
+        SizedBox(
+          height: 326,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 6),
+                child: AppButton(
+                  variant: AppButtonVariant.ghost,
+                  block: true,
+                  icon: AppIconName.folder,
+                  onPressed: _picking ? null : _pickFromDevice,
+                  child: Text(
+                    _picking ? 'در حال باز کردن...' : 'انتخاب از دستگاه',
+                  ),
+                ),
+              ),
+              Expanded(child: _buildContent()),
+            ],
+          ),
+        ),
         // Footer
         const Divider(height: 1),
         Padding(
@@ -146,7 +196,7 @@ class _PickerSheetBodyState extends ConsumerState<PickerSheetBody> {
               child: Text(
                 items.isEmpty
                     ? 'موردی انتخاب نشده'
-                    : '${widget.device != null ? "ارسال" : "ادامه با"} ${toFa(items.length)} مورد · ${fmtMB(totalMb)}',
+                    : '${widget.device != null ? "ارسال" : "ادامه با"} ${toFa(items.length)} مورد · ${formatBytes(totalBytes)}',
               ),
             ),
           ),

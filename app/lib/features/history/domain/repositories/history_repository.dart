@@ -1,6 +1,6 @@
-/// History repository contract — همرسان.
-///
-/// Abstract interface for the transfer history log.
+// History repository contract — همرسان.
+//
+// Abstract interface for the transfer history log.
 import '../entities/transfer_record.dart';
 
 abstract class HistoryRepository {

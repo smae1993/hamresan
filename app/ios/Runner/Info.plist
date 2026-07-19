@@ -7,7 +7,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Hamresan</string>
+	<string>همرسان</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>همرسان برای پیدا کردن دستگاه‌ها و انتقال مستقیم فایل در شبکه محلی به این دسترسی نیاز دارد.</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

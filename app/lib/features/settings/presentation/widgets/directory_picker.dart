@@ -8,7 +8,7 @@ Future<String?> showDirectoryPicker(
   String? initial,
 }) async {
   try {
-    return await FilePicker.platform.getDirectoryPath(
+    return await FilePicker.getDirectoryPath(
       dialogTitle: 'انتخاب محل ذخیرهٔ فایل‌های همرسان',
       initialDirectory: initial,
     );

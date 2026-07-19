@@ -368,17 +368,13 @@ class _NavRow extends StatelessWidget {
   const _NavRow({
     required this.icon,
     required this.label,
-    this.caption,
     this.value,
     required this.onTap,
-    this.tintedIcon = false,
   });
   final AppIconName icon;
   final String label;
-  final String? caption;
   final String? value;
   final VoidCallback onTap;
-  final bool tintedIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -390,23 +386,9 @@ class _NavRow extends StatelessWidget {
         padding: const EdgeInsets.all(15),
         child: Row(
           children: [
-            _SetIcon(icon: icon, tinted: tintedIcon),
+            _SetIcon(icon: icon),
             const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: AppTextStyles.setLabel),
-                  if (caption != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      caption!,
-                      style: AppTextStyles.setCap.copyWith(color: c.muted),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+            Expanded(child: Text(label, style: AppTextStyles.setLabel)),
             if (value != null)
               Text(
                 value!,

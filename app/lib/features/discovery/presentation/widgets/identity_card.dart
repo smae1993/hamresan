@@ -1,8 +1,8 @@
-/// Identity card — همرسان.
-///
-/// Recreates the `.id-card` from `Home`: a gradient card showing "this device"
-/// with an avatar, name, platform, a "visible" status pill, the pairing code,
-/// and an animated radar sweep behind it.
+// Identity card — همرسان.
+//
+// Recreates the `.id-card` from `Home`: a gradient card showing "this device"
+// with an avatar, name, platform, a "visible" status pill, the pairing code,
+// and an animated radar sweep behind it.
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_gradients.dart';

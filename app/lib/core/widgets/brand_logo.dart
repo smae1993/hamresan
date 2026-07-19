@@ -1,7 +1,7 @@
-/// Brand logo — همرسان.
-///
-/// Recreates `Logo` from `icons.jsx`: a gradient squircle containing the
-/// broadcast-arcs mark (a node + two arcs).
+// Brand logo — همرسان.
+//
+// Recreates `Logo` from `icons.jsx`: a gradient squircle containing the
+// broadcast-arcs mark (a node + two arcs).
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../theme/app_gradients.dart';

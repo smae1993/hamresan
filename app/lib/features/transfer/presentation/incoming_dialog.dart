@@ -1,8 +1,8 @@
-/// Incoming request dialog — همرسان.
-///
-/// Recreates `IncomingDialog` from `screens_receive.jsx`: a centered dialog
-/// with a gradient header (peer avatar + "wants to send"), the item list,
-/// a total row, and رد / دریافت actions.
+// Incoming request dialog — همرسان.
+//
+// Recreates `IncomingDialog` from `screens_receive.jsx`: a centered dialog
+// with a gradient header (peer avatar + "wants to send"), the item list,
+// a total row, and رد / دریافت actions.
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_gradients.dart';
 import '../../../core/theme/app_text_styles.dart';

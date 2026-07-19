@@ -1,12 +1,11 @@
-/// Preferences repository implementation (SharedPreferences) — همرسان.
+// Preferences repository implementation (SharedPreferences) — همرسان.
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/utils/default_save_path.dart';
 import '../domain/entities/app_preferences.dart';
 import '../domain/repositories/preferences_repository.dart';
 
 class PreferencesRepositoryImpl implements PreferencesRepository {
-  PreferencesRepositoryImpl({required SharedPreferences prefs})
-    : _prefs = prefs;
+  PreferencesRepositoryImpl(this._prefs);
   final SharedPreferences _prefs;
 
   static const _kTheme = 'hamresan_theme';

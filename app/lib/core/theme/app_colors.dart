@@ -1,8 +1,8 @@
-/// Design color tokens — همرسان.
-///
-/// Ported from `styles.css`. The prototype uses OKLCH; these are the
-/// equivalent sRGB hex values (computed from the same OKLCH coordinates so
-/// they match the design output on standard displays).
+// Design color tokens — همرسان.
+//
+// Ported from `styles.css`. The prototype uses OKLCH; these are the
+// equivalent sRGB hex values (computed from the same OKLCH coordinates so
+// they match the design output on standard displays).
 import 'package:flutter/material.dart';
 
 @immutable

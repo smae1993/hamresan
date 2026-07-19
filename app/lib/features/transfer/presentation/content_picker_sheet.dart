@@ -1,9 +1,9 @@
-/// Content picker sheet — همرسان.
-///
-/// Recreates `ContentPicker` from `screens_send.jsx`: a bottom sheet with
-/// 4 segmented tabs (عکس / فیلم / فایل / برنامه), a media grid for photos &
-/// videos, a file list for files & apps, multi-select, and a footer button
-/// showing count + total size.
+// Content picker sheet — همرسان.
+//
+// Recreates `ContentPicker` from `screens_send.jsx`: a bottom sheet with
+// 4 segmented tabs (عکس / فیلم / فایل / برنامه), a media grid for photos &
+// videos, a file list for files & apps, multi-select, and a footer button
+// showing count + total size.
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,7 +1,7 @@
-/// Device card — همرسان.
-///
-/// Recreates `DeviceCard` from `screens_home.jsx`: a surface card with a
-/// platform tag, a ringed avatar, device name, and an online indicator.
+// Device card — همرسان.
+//
+// Recreates `DeviceCard` from `screens_home.jsx`: a surface card with a
+// platform tag, a ringed avatar, device name, and an online indicator.
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_text_styles.dart';

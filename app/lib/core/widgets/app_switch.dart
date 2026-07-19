@@ -1,6 +1,6 @@
-/// Toggle switch — همرسان.
-///
-/// Recreates `.switch` from `styles.css`: 50×30 pill, knob slides 20px.
+// Toggle switch — همرسان.
+//
+// Recreates `.switch` from `styles.css`: 50×30 pill, knob slides 20px.
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 

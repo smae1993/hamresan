@@ -25,8 +25,9 @@ class TransferRecord {
   String get when {
     final difference = DateTime.now().difference(createdAt);
     if (difference.inMinutes < 1) return 'هم‌اکنون';
-    if (difference.inHours < 1)
+    if (difference.inHours < 1) {
       return '${toFa(difference.inMinutes)} دقیقه پیش';
+    }
     if (difference.inDays < 1) return '${toFa(difference.inHours)} ساعت پیش';
     if (difference.inDays < 7) return '${toFa(difference.inDays)} روز پیش';
     return '${toFa(createdAt.year)}/${toFa(createdAt.month.toString().padLeft(2, '0'))}/${toFa(createdAt.day.toString().padLeft(2, '0'))}';

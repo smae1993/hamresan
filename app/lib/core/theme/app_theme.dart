@@ -1,7 +1,7 @@
-/// App theme — همرسان.
-///
-/// Exposes [lightTheme]/[darkTheme] and a BuildContext extension to access
-/// the resolved [AppColors] from anywhere in the tree.
+// App theme — همرسان.
+//
+// Exposes [lightTheme]/[darkTheme] and a BuildContext extension to access
+// the resolved [AppColors] from anywhere in the tree.
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_dimensions.dart';

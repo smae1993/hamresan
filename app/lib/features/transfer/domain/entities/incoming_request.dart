@@ -1,6 +1,6 @@
-/// Incoming transfer request entity — همرسان.
-///
-/// Mirrors `INCOMING_REQ` from `data.jsx`: a peer that wants to send content.
+// Incoming transfer request entity — همرسان.
+//
+// Mirrors `INCOMING_REQ` from `data.jsx`: a peer that wants to send content.
 import 'content_item.dart';
 
 class IncomingRequest {

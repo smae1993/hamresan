@@ -1,9 +1,9 @@
-/// Transfer screen — همرسان.
-///
-/// Recreates `TransferView` from `screens_send.jsx` (used for both send &
-/// receive): a full-screen page with a top bar, a progress ring, peer info,
-/// speed/ETA stats, and a per-file progress list. When the transfer is done
-/// it shows [TransferSuccessView].
+// Transfer screen — همرسان.
+//
+// Recreates `TransferView` from `screens_send.jsx` (used for both send &
+// receive): a full-screen page with a top bar, a progress ring, peer info,
+// speed/ETA stats, and a per-file progress list. When the transfer is done
+// it shows [TransferSuccessView].
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

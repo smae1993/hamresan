@@ -1,8 +1,8 @@
-/// Settings screen — همرسان.
-///
-/// Recreates `Settings` from `screens_misc.jsx`: profile card (editable name
-/// + hue), appearance (theme segmented), visibility/auto-accept toggles,
-/// save location, network info, and a "test receive" action.
+// Settings screen — همرسان.
+//
+// Recreates `Settings` from `screens_misc.jsx`: profile card (editable name
+// + hue), appearance (theme segmented), visibility/auto-accept toggles,
+// save location, network info, and a "test receive" action.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_dimensions.dart';

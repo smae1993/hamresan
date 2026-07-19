@@ -1,8 +1,8 @@
-/// Home / Discovery screen — همرسان.
-///
-/// Recreates `Home` from `screens_home.jsx`: top bar (logo, title, bell, theme),
-/// identity card with radar, nearby-device grid, and a FAB to start sending.
-/// Drives the transfer flow overlays (picker / recipient / incoming / transfer).
+// Home / Discovery screen — همرسان.
+//
+// Recreates `Home` from `screens_home.jsx`: top bar (logo, title, bell, theme),
+// identity card with radar, nearby-device grid, and a FAB to start sending.
+// Drives the transfer flow overlays (picker / recipient / incoming / transfer).
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_dimensions.dart';

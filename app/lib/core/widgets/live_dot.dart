@@ -1,7 +1,7 @@
-/// Live status dot — همرسان.
-///
-/// Recreates `.live-dot` from `styles.css`: a small green dot with a pulsing
-/// glow (keyframe `livepulse`).
+// Live status dot — همرسان.
+//
+// Recreates `.live-dot` from `styles.css`: a small green dot with a pulsing
+// glow (keyframe `livepulse`).
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 

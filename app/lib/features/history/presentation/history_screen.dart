@@ -1,7 +1,7 @@
-/// History screen — همرسان.
-///
-/// Recreates `History` from `screens_misc.jsx`: filter chips (همه / ارسالی /
-/// دریافتی) and a list of transfer records. Empty state when filtered to none.
+// History screen — همرسان.
+//
+// Recreates `History` from `screens_misc.jsx`: filter chips (همه / ارسالی /
+// دریافتی) and a list of transfer records. Empty state when filtered to none.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_dimensions.dart';

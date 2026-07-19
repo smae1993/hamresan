@@ -1,7 +1,7 @@
-/// Striped media placeholder — همرسان.
-///
-/// Recreates `StripePlaceholder` from `icons.jsx`: a 135deg repeating stripe
-/// used for photo/video thumbnails in the picker and transfer lists.
+// Striped media placeholder — همرسان.
+//
+// Recreates `StripePlaceholder` from `icons.jsx`: a 135deg repeating stripe
+// used for photo/video thumbnails in the picker and transfer lists.
 import 'package:flutter/material.dart';
 import '../theme/app_gradients.dart';
 

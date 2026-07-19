@@ -1,7 +1,7 @@
-/// Content item entity — همرسان.
-///
-/// A single selectable piece of content (photo, video, file, app) in the
-/// picker, and a single item being transferred.
+// Content item entity — همرسان.
+//
+// A single selectable piece of content (photo, video, file, app) in the
+// picker, and a single item being transferred.
 import '../../../../core/utils/size_format.dart';
 import '../enums.dart';
 

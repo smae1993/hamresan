@@ -1,6 +1,6 @@
-/// Device entity — همرسان.
-///
-/// Represents a remote device discovered on the local network.
+// Device entity — همرسان.
+//
+// Represents a remote device discovered on the local network.
 import '../../../transfer/domain/enums.dart';
 
 class Device {

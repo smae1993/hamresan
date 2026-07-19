@@ -1,7 +1,7 @@
-/// Buttons — همرسان.
-///
-/// Recreates the `.btn` family from `styles.css`:
-/// `.btn-primary`, `.btn-ghost`, `.btn-grad`, `.btn-block`, `.btn-lg`, `.fab`.
+// Buttons — همرسان.
+//
+// Recreates the `.btn` family from `styles.css`:
+// `.btn-primary`, `.btn-ghost`, `.btn-grad`, `.btn-block`, `.btn-lg`, `.fab`.
 import 'package:flutter/material.dart';
 import '../theme/app_gradients.dart';
 import '../theme/app_text_styles.dart';

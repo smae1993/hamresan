@@ -1,8 +1,8 @@
-/// Gradient helpers — همرسان.
-///
-/// The prototype builds per-hue gradients in JS (`Avatar`, file icons, etc.)
-/// as `linear-gradient(135deg, oklch(0.66 0.15 H), oklch(0.55 0.17 H+22))`.
-/// Here we reproduce the same OKLCH→sRGB conversion at build time.
+// Gradient helpers — همرسان.
+//
+// The prototype builds per-hue gradients in JS (`Avatar`, file icons, etc.)
+// as `linear-gradient(135deg, oklch(0.66 0.15 H), oklch(0.55 0.17 H+22))`.
+// Here we reproduce the same OKLCH→sRGB conversion at build time.
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'app_colors.dart';

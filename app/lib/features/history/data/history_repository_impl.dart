@@ -4,7 +4,7 @@ import '../domain/entities/transfer_record.dart';
 import '../domain/repositories/history_repository.dart';
 
 class HistoryRepositoryImpl implements HistoryRepository {
-  HistoryRepositoryImpl({required SharedPreferences prefs}) : _prefs = prefs {
+  HistoryRepositoryImpl(this._prefs) {
     _migrate();
   }
 

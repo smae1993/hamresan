@@ -1,7 +1,7 @@
-/// Onboarding screen — همرسان.
-///
-/// Recreates `Onboarding` from `screens_home.jsx`: a 3-step intro
-/// (radar / types / shield) with animated art, dots, and a CTA.
+// Onboarding screen — همرسان.
+//
+// Recreates `Onboarding` from `screens_home.jsx`: a 3-step intro
+// (radar / types / shield) with animated art, dots, and a CTA.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

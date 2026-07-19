@@ -1,9 +1,9 @@
-/// Onboarding repository implementation (SharedPreferences) — همرسان.
+// Onboarding repository implementation (SharedPreferences) — همرسان.
 import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/repositories/onboarding_repository.dart';
 
 class OnboardingRepositoryImpl implements OnboardingRepository {
-  OnboardingRepositoryImpl({required SharedPreferences prefs}) : _prefs = prefs;
+  OnboardingRepositoryImpl(this._prefs);
   final SharedPreferences _prefs;
 
   static const _key = 'hamresan_onboarded';

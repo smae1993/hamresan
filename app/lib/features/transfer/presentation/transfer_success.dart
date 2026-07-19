@@ -1,8 +1,8 @@
-/// Transfer success view — همرسان.
-///
-/// Recreates the "done" branch of `TransferView` from `screens_send.jsx`:
-/// a success burst icon, a summary line, and a "تمام" button. For receives,
-/// shows the save location.
+// Transfer success view — همرسان.
+//
+// Recreates the "done" branch of `TransferView` from `screens_send.jsx`:
+// a success burst icon, a summary line, and a "تمام" button. For receives,
+// shows the save location.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_text_styles.dart';

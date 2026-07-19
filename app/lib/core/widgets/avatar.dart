@@ -1,8 +1,8 @@
-/// Avatar widget — همرسان.
-///
-/// Recreates `Avatar` from `icons.jsx`: a hue-based gradient circle/squircle
-/// containing either a device-type icon or an initial letter, optionally with
-/// a pulsing green "online" ring (`.avatar-ring`).
+// Avatar widget — همرسان.
+//
+// Recreates `Avatar` from `icons.jsx`: a hue-based gradient circle/squircle
+// containing either a device-type icon or an initial letter, optionally with
+// a pulsing green "online" ring (`.avatar-ring`).
 import 'package:flutter/material.dart';
 import '../theme/app_gradients.dart';
 import 'app_icon.dart';

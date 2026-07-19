@@ -1,7 +1,7 @@
-/// App top bar — همرسان.
-///
-/// Recreates `.topbar` from `styles.css`: a title + subtitle on the leading
-/// side, with optional trailing actions. Leading widget (e.g. logo) optional.
+// App top bar — همرسان.
+//
+// Recreates `.topbar` from `styles.css`: a title + subtitle on the leading
+// side, with optional trailing actions. Leading widget (e.g. logo) optional.
 import 'package:flutter/material.dart';
 import '../theme/app_dimensions.dart';
 import '../theme/app_text_styles.dart';

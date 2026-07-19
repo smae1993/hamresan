@@ -1,10 +1,10 @@
-/// Application router — همرسان.
-///
-/// Uses a [StatefulShellRoute] for the bottom-nav tabs (home / history /
-/// settings) and a redirect that gates the whole app behind onboarding.
-/// The transfer overlay (sheets, incoming dialog, full-screen transfer) is
-/// driven by [transferFlowProvider] and rendered above the shell, mirroring
-/// the prototype's overlay-on-current-screen approach.
+// Application router — همرسان.
+//
+// Uses a [StatefulShellRoute] for the bottom-nav tabs (home / history /
+// settings) and a redirect that gates the whole app behind onboarding.
+// The transfer overlay (sheets, incoming dialog, full-screen transfer) is
+// driven by [transferFlowProvider] and rendered above the shell, mirroring
+// the prototype's overlay-on-current-screen approach.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

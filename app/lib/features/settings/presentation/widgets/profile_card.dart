@@ -1,7 +1,7 @@
-/// Profile card (settings) — همرسان.
-///
-/// Recreates the profile `.id-card` from `Settings` in `screens_misc.jsx`:
-/// gradient card with editable name, code, and a hue swatch picker.
+// Profile card (settings) — همرسان.
+//
+// Recreates the profile `.id-card` from `Settings` in `screens_misc.jsx`:
+// gradient card with editable name, code, and a hue swatch picker.
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/app_gradients.dart';

@@ -1,7 +1,7 @@
-/// Bottom navigation bar — همرسان.
-///
-/// Recreates `.nav` from `styles.css`: a blurred bar with three items
-/// (اطراف / تاریخچه / تنظیمات), active item tinted with the brand color.
+// Bottom navigation bar — همرسان.
+//
+// Recreates `.nav` from `styles.css`: a blurred bar with three items
+// (اطراف / تاریخچه / تنظیمات), active item tinted with the brand color.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' show ImageFilter;

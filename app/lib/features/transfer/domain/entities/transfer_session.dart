@@ -1,7 +1,7 @@
-/// Transfer session entity — همرسان.
-///
-/// Describes an active transfer (send or receive): the peer, the items, and
-/// progress state. Mirrors the props of the prototype's `TransferView`.
+// Transfer session entity — همرسان.
+//
+// Describes an active transfer (send or receive): the peer, the items, and
+// progress state. Mirrors the props of the prototype's `TransferView`.
 import '../enums.dart';
 import 'content_item.dart';
 

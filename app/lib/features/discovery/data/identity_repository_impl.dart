@@ -1,4 +1,4 @@
-/// Identity repository implementation (SharedPreferences) — همرسان.
+// Identity repository implementation (SharedPreferences) — همرسان.
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -7,7 +7,7 @@ import '../domain/entities/identity.dart';
 import '../domain/repositories/identity_repository.dart';
 
 class IdentityRepositoryImpl implements IdentityRepository {
-  IdentityRepositoryImpl({required SharedPreferences prefs}) : _prefs = prefs;
+  IdentityRepositoryImpl(this._prefs);
   final SharedPreferences _prefs;
 
   static const _key = 'hamresan_me';

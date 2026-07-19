@@ -1,7 +1,7 @@
-/// Onboarding art — همرسان.
-///
-/// Recreates `OnboardArt` from `screens_home.jsx`: three animated illustrations
-/// shown behind each onboarding step (radar sweep / content type cards / shield).
+// Onboarding art — همرسان.
+//
+// Recreates `OnboardArt` from `screens_home.jsx`: three animated illustrations
+// shown behind each onboarding step (radar sweep / content type cards / shield).
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_gradients.dart';
 import '../../../../core/theme/app_theme.dart';

@@ -1,6 +1,6 @@
-/// Filter chips — همرسان.
-///
-/// Recreates `.chip`/`.chip.active` from `styles.css`.
+// Filter chips — همرسان.
+//
+// Recreates `.chip`/`.chip.active` from `styles.css`.
 import 'package:flutter/material.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_theme.dart';

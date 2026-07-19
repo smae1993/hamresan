@@ -1,7 +1,7 @@
-/// Segmented control — همرسان.
-///
-/// Recreates `.seg` from `styles.css`: a pill container holding equal-width
-/// segments; the active one lifts onto the surface with a small shadow.
+// Segmented control — همرسان.
+//
+// Recreates `.seg` from `styles.css`: a pill container holding equal-width
+// segments; the active one lifts onto the surface with a small shadow.
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';

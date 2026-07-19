@@ -1,8 +1,8 @@
-/// Recipient picker sheet — همرسان.
-///
-/// Recreates `RecipientSheet` from `screens_send.jsx`: shown after content is
-/// picked with no preselected device. Lists nearby devices as rows; tapping
-/// one begins the transfer.
+// Recipient picker sheet — همرسان.
+//
+// Recreates `RecipientSheet` from `screens_send.jsx`: shown after content is
+// picked with no preselected device. Lists nearby devices as rows; tapping
+// one begins the transfer.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_text_styles.dart';

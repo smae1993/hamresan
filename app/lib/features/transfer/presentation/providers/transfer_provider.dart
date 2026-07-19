@@ -1,12 +1,12 @@
-/// Transfer flow provider — همرسان.
-///
-/// State machine mirroring the React `flow` state in `app.jsx`:
-///   idle → picker → recipient → sending → success → idle
-///   idle → incoming → receiving → success → idle
-///
-/// Drives the modal sheets, the incoming dialog, and the full-screen
-/// transfer screen. Persists nothing itself; it records completed transfers
-/// into [HistoryNotifier].
+// Transfer flow provider — همرسان.
+//
+// State machine mirroring the React `flow` state in `app.jsx`:
+//   idle → picker → recipient → sending → success → idle
+//   idle → incoming → receiving → success → idle
+//
+// Drives the modal sheets, the incoming dialog, and the full-screen
+// transfer screen. Persists nothing itself; it records completed transfers
+// into [HistoryNotifier].
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';

@@ -1,7 +1,7 @@
-/// Progress ring — همرسان.
-///
-/// Recreates `Ring` from `ui.jsx`: an SVG circular progress with a brand
-/// gradient stroke and a rounded cap.
+// Progress ring — همرسان.
+//
+// Recreates `Ring` from `ui.jsx`: an SVG circular progress with a brand
+// gradient stroke and a rounded cap.
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/app_dimensions.dart';

@@ -42,19 +42,19 @@ final deviceRepositoryProvider = Provider<DeviceRepository>((ref) {
 });
 
 final identityRepositoryProvider = Provider<IdentityRepository>((ref) {
-  return IdentityRepositoryImpl(prefs: ref.watch(sharedPreferencesProvider));
+  return IdentityRepositoryImpl(ref.watch(sharedPreferencesProvider));
 });
 
 final historyRepositoryProvider = Provider<HistoryRepository>((ref) {
-  return HistoryRepositoryImpl(prefs: ref.watch(sharedPreferencesProvider));
+  return HistoryRepositoryImpl(ref.watch(sharedPreferencesProvider));
 });
 
 final onboardingRepositoryProvider = Provider<OnboardingRepository>((ref) {
-  return OnboardingRepositoryImpl(prefs: ref.watch(sharedPreferencesProvider));
+  return OnboardingRepositoryImpl(ref.watch(sharedPreferencesProvider));
 });
 
 final preferencesRepositoryProvider = Provider<PreferencesRepository>((ref) {
-  return PreferencesRepositoryImpl(prefs: ref.watch(sharedPreferencesProvider));
+  return PreferencesRepositoryImpl(ref.watch(sharedPreferencesProvider));
 });
 
 final networkRepositoryProvider = Provider<NetworkRepository>((ref) {

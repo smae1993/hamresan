@@ -1,7 +1,7 @@
-/// Transfer repository contract — همرسان.
-///
-/// Abstract interface for performing transfers. The stub implementation
-/// simulates progress; a real implementation will open sockets later.
+// Transfer repository contract — همرسان.
+//
+// Abstract interface for performing transfers. The stub implementation
+// simulates progress; a real implementation will open sockets later.
 import '../entities/transfer_session.dart';
 import '../entities/incoming_request.dart';
 import '../entities/transfer_progress.dart';

@@ -1,7 +1,7 @@
-/// Typography — همرسان.
-///
-/// Font family is Vazirmatn (declared in pubspec). Sizes/weights are ported
-/// from the prototype's inline styles + `styles.css`.
+// Typography — همرسان.
+//
+// Font family is Vazirmatn (declared in pubspec). Sizes/weights are ported
+// from the prototype's inline styles + `styles.css`.
 import 'package:flutter/material.dart';
 
 const String _kFont = 'Vazirmatn';

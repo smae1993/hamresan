@@ -1,4 +1,4 @@
-/// File-size formatting helpers — همرسان.
+// File-size formatting helpers — همرسان.
 import 'fa_digits.dart';
 
 /// Parses a size string (e.g. "۴٫۲ MB", "۱۴۸ MB", "۸۴۰ KB", "۲ GB") into MB.
@@ -13,9 +13,9 @@ double parseMB(String s) {
 
 /// Formats an MB count back to a Persian-digit size string.
 String fmtMB(double mb) {
-  if (mb >= 1024) return toFa((mb / 1024).toStringAsFixed(1)) + ' GB';
-  if (mb < 1) return toFa((mb * 1024).round()) + ' KB';
-  return toFa(mb.toStringAsFixed(1)) + ' MB';
+  if (mb >= 1024) return '${toFa((mb / 1024).toStringAsFixed(1))} GB';
+  if (mb < 1) return '${toFa((mb * 1024).round())} KB';
+  return '${toFa(mb.toStringAsFixed(1))} MB';
 }
 
 /// Formats an exact byte count for display without using the formatted value

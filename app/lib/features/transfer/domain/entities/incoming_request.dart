@@ -5,15 +5,19 @@ import 'content_item.dart';
 
 class IncomingRequest {
   const IncomingRequest({
+    required this.transferId,
+    required this.peerId,
     required this.peer,
     required this.hue,
     required this.type,
     required this.platform,
     required this.code,
     required this.items,
-    required this.total,
+    required this.totalBytes,
   });
 
+  final String transferId;
+  final String peerId;
   final String peer;
   final double hue;
   final String type;
@@ -21,6 +25,5 @@ class IncomingRequest {
   final String code;
   final List<ContentItem> items;
 
-  /// Total size display string, e.g. "۹۵٫۳ MB".
-  final String total;
+  final int totalBytes;
 }

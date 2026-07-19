@@ -6,11 +6,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
 class LiveDot extends StatefulWidget {
-  const LiveDot({
-    super.key,
-    this.color,
-    this.size = 8,
-  });
+  const LiveDot({super.key, this.color, this.size = 8});
 
   final Color? color;
   final double size;
@@ -19,8 +15,7 @@ class LiveDot extends StatefulWidget {
   State<LiveDot> createState() => _LiveDotState();
 }
 
-class _LiveDotState extends State<LiveDot>
-    with SingleTickerProviderStateMixin {
+class _LiveDotState extends State<LiveDot> with SingleTickerProviderStateMixin {
   late final AnimationController _c;
 
   @override

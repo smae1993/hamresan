@@ -27,17 +27,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   static const _steps = <_ObStep>[
     _ObStep(
       title: 'همه‌چیز را در یک لحظه بفرست',
-      desc: 'عکس، فیلم، فایل و حتی برنامه‌ها را مستقیم بین دستگاه‌های نزدیک رد و بدل کن — بدون اینترنت، بدون ابر.',
+      desc:
+          'عکس، فیلم، فایل و حتی برنامه‌ها را مستقیم بین دستگاه‌های نزدیک رد و بدل کن — بدون اینترنت، بدون ابر.',
       art: OnboardArtKind.radar,
     ),
     _ObStep(
       title: 'سریع، روی شبکه‌ی محلی',
-      desc: 'همرسان دستگاه‌های روی همان وای‌فای را خودش پیدا می‌کند. کافی است یکی را انتخاب کنی.',
+      desc:
+          'همرسان دستگاه‌های روی همان وای‌فای را خودش پیدا می‌کند. کافی است یکی را انتخاب کنی.',
       art: OnboardArtKind.types,
     ),
     _ObStep(
       title: 'خصوصی و امن',
-      desc: 'انتقال‌ها رمزنگاری می‌شوند و هیچ داده‌ای از دستگاه تو خارج نمی‌شود. تو کنترل کامل داری.',
+      desc:
+          'فایل‌ها فقط پس از تأیید تو روی شبکه‌ی محلی جابه‌جا می‌شوند و صحت آن‌ها در مقصد بررسی می‌شود.',
       art: OnboardArtKind.shield,
     ),
   ];
@@ -74,7 +77,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 children: [
                   const BrandLogo(size: 30),
                   const SizedBox(width: 9),
-                  Text('همرسان', style: AppTextStyles.idName.copyWith(fontSize: 17)),
+                  Text(
+                    'همرسان',
+                    style: AppTextStyles.idName.copyWith(fontSize: 17),
+                  ),
                   const Spacer(),
                   if (!isLast)
                     AppButton(
@@ -88,10 +94,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // Art
             Expanded(
               child: Center(
-                child: OnboardArt(
-                  key: ValueKey(_index),
-                  kind: step.art,
-                ),
+                child: OnboardArt(key: ValueKey(_index), kind: step.art),
               ),
             ),
             // Bottom content
@@ -117,9 +120,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     }),
                   ),
                   const SizedBox(height: 22),
-                  _FadeText(text: step.title, style: AppTextStyles.obTitle, align: TextAlign.center),
+                  _FadeText(
+                    text: step.title,
+                    style: AppTextStyles.obTitle,
+                    align: TextAlign.center,
+                  ),
                   const SizedBox(height: 12),
-                  _FadeText(text: step.desc, style: AppTextStyles.obDesc.copyWith(color: c.muted), align: TextAlign.center),
+                  _FadeText(
+                    text: step.desc,
+                    style: AppTextStyles.obDesc.copyWith(color: c.muted),
+                    align: TextAlign.center,
+                  ),
                   const SizedBox(height: 26),
                   AppButton(
                     variant: AppButtonVariant.grad,
@@ -190,11 +201,7 @@ class _FadeTextState extends State<_FadeText>
       opacity: _opacity,
       child: SlideTransition(
         position: _offset,
-        child: Text(
-          widget.text,
-          style: widget.style,
-          textAlign: widget.align,
-        ),
+        child: Text(widget.text, style: widget.style, textAlign: widget.align),
       ),
     );
   }

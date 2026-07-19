@@ -77,7 +77,10 @@ class _DeviceCardState extends State<DeviceCard>
                   child: Transform.translate(
                     offset: const Offset(6, -8),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: c.surface2,
                         borderRadius: BorderRadius.circular(100),
@@ -85,7 +88,9 @@ class _DeviceCardState extends State<DeviceCard>
                       ),
                       child: Text(
                         toFa(d.platform),
-                        style: AppTextStyles.platformTag.copyWith(color: c.muted),
+                        style: AppTextStyles.platformTag.copyWith(
+                          color: c.muted,
+                        ),
                       ),
                     ),
                   ),
@@ -95,14 +100,21 @@ class _DeviceCardState extends State<DeviceCard>
                   child: Avatar(hue: d.hue, type: d.type, size: 56, ring: true),
                 ),
                 const SizedBox(height: 4),
-                Text(d.name, style: AppTextStyles.deviceName, textAlign: TextAlign.center),
+                Text(
+                  d.name,
+                  style: AppTextStyles.deviceName,
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 3),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     LiveDot(color: c.green, size: 6),
                     const SizedBox(width: 4),
-                    Text('آنلاین', style: AppTextStyles.deviceMeta.copyWith(color: c.muted)),
+                    Text(
+                      'آنلاین',
+                      style: AppTextStyles.deviceMeta.copyWith(color: c.muted),
+                    ),
                   ],
                 ),
               ],

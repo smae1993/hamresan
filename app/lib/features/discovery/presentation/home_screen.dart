@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_dimensions.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/fa_digits.dart';
 import '../../../core/widgets/app_icon.dart';
@@ -16,12 +17,10 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../settings/domain/entities/app_preferences.dart';
 import '../../settings/presentation/providers/preferences_provider.dart';
-import '../../transfer/domain/entities/content_item.dart';
-import '../../transfer/domain/entities/incoming_request.dart';
-import '../../transfer/domain/enums.dart';
 import '../../transfer/presentation/providers/transfer_provider.dart';
 import '../domain/entities/device.dart';
 import '../domain/entities/identity.dart';
+import '../data/lan_service.dart';
 import '../presentation/providers/discovery_provider.dart';
 import '../presentation/providers/identity_provider.dart';
 import 'widgets/device_card.dart';
@@ -36,6 +35,9 @@ class HomeScreen extends ConsumerWidget {
     final me = ref.watch(identityProvider);
     final prefs = ref.watch(preferencesProvider);
     final transferFlow = ref.watch(transferFlowProvider);
+    final lanStatus = ref
+        .watch(lanStatusProvider)
+        .maybeWhen(data: (status) => status, orElse: () => null);
 
     return Scaffold(
       backgroundColor: context.colors.bg,
@@ -48,16 +50,14 @@ class HomeScreen extends ConsumerWidget {
                 AppTopBar(
                   leading: const BrandLogo(size: 40),
                   title: 'همرسان',
-                  subtitle: '${toFa(devicesAsync.maybeWhen(data: (d) => d.length, orElse: () => 0))} دستگاه در شبکه',
+                  subtitle: lanStatus == LanStatus.failed
+                      ? 'خطا در دسترسی به شبکهٔ محلی'
+                      : '${toFa(devicesAsync.maybeWhen(data: (d) => d.length, orElse: () => 0))} دستگاه در شبکه',
                   actions: [
                     IconButtonCircle(
-                      icon: AppIconName.bell,
-                      badge: false,
-                      onPressed: () => _triggerIncomingDemo(ref),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButtonCircle(
-                      icon: prefs.theme == AppThemeMode.dark ? AppIconName.sun : AppIconName.moon,
+                      icon: prefs.theme == AppThemeMode.dark
+                          ? AppIconName.sun
+                          : AppIconName.moon,
                       onPressed: () =>
                           ref.read(preferencesProvider.notifier).toggleTheme(),
                     ),
@@ -70,8 +70,9 @@ class HomeScreen extends ConsumerWidget {
                       data: (d) => d,
                       orElse: () => const [],
                     ),
-                    onPickDevice: (d) =>
-                        ref.read(transferFlowProvider.notifier).startSendToDevice(d),
+                    onPickDevice: (d) => ref
+                        .read(transferFlowProvider.notifier)
+                        .startSendToDevice(d),
                     onSendFlow: () =>
                         ref.read(transferFlowProvider.notifier).startSendFlow(),
                   ),
@@ -88,7 +89,9 @@ class HomeScreen extends ConsumerWidget {
                   label: 'ارسال محتوا',
                   icon: AppIconName.send,
                   onPressed: transferFlow is TransferIdle
-                      ? () => ref.read(transferFlowProvider.notifier).startSendFlow()
+                      ? () => ref
+                            .read(transferFlowProvider.notifier)
+                            .startSendFlow()
                       : null,
                 ),
               ),
@@ -98,27 +101,15 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
-
-  void _triggerIncomingDemo(WidgetRef ref) {
-    final request = IncomingRequest(
-      peer: 'گوشی علی',
-      hue: 200,
-      type: 'phone',
-      platform: 'Android',
-      code: 'ققنوس-۱۴',
-      items: [
-        ContentItem(key: 'demo-1', name: 'غروب ساحل.jpg', kind: ContentKind.image, size: '۴٫۲ MB', hue: 24),
-        ContentItem(key: 'demo-2', name: 'تولد.jpg', kind: ContentKind.image, size: '۳٫۱ MB', hue: 330),
-        ContentItem(key: 'demo-3', name: 'سفر شمال.mp4', kind: ContentKind.video, size: '۸۸ MB', hue: 200),
-      ],
-      total: '۹۵٫۳ MB',
-    );
-    ref.read(transferFlowProvider.notifier).showIncoming(request);
-  }
 }
 
 class _Body extends StatelessWidget {
-  const _Body({required this.me, required this.devices, required this.onPickDevice, required this.onSendFlow});
+  const _Body({
+    required this.me,
+    required this.devices,
+    required this.onPickDevice,
+    required this.onSendFlow,
+  });
 
   final Identity me;
   final List<Device> devices;
@@ -128,9 +119,12 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 0).copyWith(
-        bottom: AppDimensions.navHeight + 80,
-      ),
+      padding: const EdgeInsets.fromLTRB(
+        20,
+        4,
+        20,
+        0,
+      ).copyWith(bottom: AppDimensions.navHeight + 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -207,7 +201,10 @@ class _ScanningLabel extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('در حال جستجو', style: AppTextStyles.scanning.copyWith(color: context.colors.muted)),
+        Text(
+          'در حال جستجو',
+          style: AppTextStyles.scanning.copyWith(color: context.colors.muted),
+        ),
         const SizedBox(width: 5),
         const _BobDot(delay: 0),
         const SizedBox(width: 2),

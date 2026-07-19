@@ -105,14 +105,19 @@ class _ScanningIndicatorState extends State<ScanningIndicator>
           style: AppTextStyles.scanning.copyWith(color: c.muted),
         ),
         const SizedBox(width: 5),
-        for (var i = 0; i < 3; i++) _Dot(controller: _c, delay: i * 0.2, color: c.primary),
+        for (var i = 0; i < 3; i++)
+          _Dot(controller: _c, delay: i * 0.2, color: c.primary),
       ],
     );
   }
 }
 
 class _Dot extends StatelessWidget {
-  const _Dot({required this.controller, required this.delay, required this.color});
+  const _Dot({
+    required this.controller,
+    required this.delay,
+    required this.color,
+  });
   final AnimationController controller;
   final double delay;
   final Color color;

@@ -5,7 +5,8 @@ import '../domain/entities/app_preferences.dart';
 import '../domain/repositories/preferences_repository.dart';
 
 class PreferencesRepositoryImpl implements PreferencesRepository {
-  PreferencesRepositoryImpl({required SharedPreferences prefs}) : _prefs = prefs;
+  PreferencesRepositoryImpl({required SharedPreferences prefs})
+    : _prefs = prefs;
   final SharedPreferences _prefs;
 
   static const _kTheme = 'hamresan_theme';
@@ -32,7 +33,10 @@ class PreferencesRepositoryImpl implements PreferencesRepository {
   @override
   Future<void> save(AppPreferences prefs) async {
     await Future.wait([
-      _prefs.setString(_kTheme, prefs.theme == AppThemeMode.dark ? 'dark' : 'light'),
+      _prefs.setString(
+        _kTheme,
+        prefs.theme == AppThemeMode.dark ? 'dark' : 'light',
+      ),
       _prefs.setBool(_kVisible, prefs.visible),
       _prefs.setBool(_kAutoAccept, prefs.autoAccept),
       _prefs.setString(_kSavePath, prefs.savePath),

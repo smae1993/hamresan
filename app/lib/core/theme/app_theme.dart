@@ -8,8 +8,9 @@ import 'app_dimensions.dart';
 
 extension AppColorsX on BuildContext {
   /// The active color set for the current brightness.
-  AppColors get colors =>
-      Theme.of(this).brightness == Brightness.dark ? AppColors.dark : AppColors.light;
+  AppColors get colors => Theme.of(this).brightness == Brightness.dark
+      ? AppColors.dark
+      : AppColors.light;
 
   /// True when the current theme is dark.
   bool get isDark => Theme.of(this).brightness == Brightness.dark;
@@ -72,47 +73,44 @@ class AppShadows {
   AppShadows._();
 
   static List<BoxShadow> sm(AppColors c) => [
-        BoxShadow(
-          color: c.text.withValues(alpha: 0.10),
-          offset: const Offset(0, 2),
-          blurRadius: 8,
-          spreadRadius: -3,
-        ),
-      ];
+    BoxShadow(
+      color: c.text.withValues(alpha: 0.10),
+      offset: const Offset(0, 2),
+      blurRadius: 8,
+      spreadRadius: -3,
+    ),
+  ];
 
   static List<BoxShadow> md(AppColors c) => [
-        BoxShadow(
-          color: c.text.withValues(alpha: 0.20),
-          offset: const Offset(0, 14),
-          blurRadius: 34,
-          spreadRadius: -16,
-        ),
-      ];
+    BoxShadow(
+      color: c.text.withValues(alpha: 0.20),
+      offset: const Offset(0, 14),
+      blurRadius: 34,
+      spreadRadius: -16,
+    ),
+  ];
 
   static List<BoxShadow> lg(AppColors c) => [
-        BoxShadow(
-          color: c.text.withValues(alpha: 0.24),
-          offset: const Offset(0, 26),
-          blurRadius: 60,
-          spreadRadius: -22,
-        ),
-      ];
+    BoxShadow(
+      color: c.text.withValues(alpha: 0.24),
+      offset: const Offset(0, 26),
+      blurRadius: 60,
+      spreadRadius: -22,
+    ),
+  ];
 
   /// FAB / brand-button shadow (tinted with primary).
   static List<BoxShadow> fab(AppColors c) => [
-        BoxShadow(
-          color: c.primary.withValues(alpha: 0.50),
-          offset: const Offset(0, 12),
-          blurRadius: 26,
-          spreadRadius: -8,
-        ),
-      ];
+    BoxShadow(
+      color: c.primary.withValues(alpha: 0.50),
+      offset: const Offset(0, 12),
+      blurRadius: 26,
+      spreadRadius: -8,
+    ),
+  ];
 }
 
 /// The standard screen corner radius (used by sheets/dialogs).
-final BorderRadius kRadiusLg =
-    BorderRadius.circular(AppDimensions.radiusLg);
-final BorderRadius kRadiusMd =
-    BorderRadius.circular(AppDimensions.radiusMd);
-final BorderRadius kRadiusSm =
-    BorderRadius.circular(AppDimensions.radiusSm);
+final BorderRadius kRadiusLg = BorderRadius.circular(AppDimensions.radiusLg);
+final BorderRadius kRadiusMd = BorderRadius.circular(AppDimensions.radiusMd);
+final BorderRadius kRadiusSm = BorderRadius.circular(AppDimensions.radiusSm);

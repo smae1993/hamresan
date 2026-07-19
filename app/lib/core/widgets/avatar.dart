@@ -57,7 +57,12 @@ class Avatar extends StatelessWidget {
         height: size,
         child: Center(
           child: type != null
-              ? AppIcon(deviceIcon(type), size: size * 0.46, stroke: 2.1, color: Colors.white)
+              ? AppIcon(
+                  deviceIcon(type),
+                  size: size * 0.46,
+                  stroke: 2.1,
+                  color: Colors.white,
+                )
               : Text(
                   label ?? 'م',
                   style: TextStyle(
@@ -145,10 +150,7 @@ class _AvatarRingState extends State<_AvatarRing>
               height: ringSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFF1A9951),
-                  width: 2,
-                ),
+                border: Border.all(color: const Color(0xFF1A9951), width: 2),
               ),
             ),
           ),

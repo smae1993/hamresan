@@ -20,9 +20,13 @@ import 'routes.dart';
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
+  final refresh = ValueNotifier<bool>(ref.read(onboardingProvider));
+  ref.listen<bool>(onboardingProvider, (_, next) => refresh.value = next);
+  ref.onDispose(refresh.dispose);
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: AppRoutes.home,
+    refreshListenable: refresh,
     redirect: (context, state) {
       final onboarded = ref.read(onboardingProvider);
       final goingToOnboarding = state.matchedLocation == AppRoutes.onboarding;

@@ -26,7 +26,8 @@ class TransferSuccessView extends ConsumerStatefulWidget {
   final VoidCallback onFinish;
 
   @override
-  ConsumerState<TransferSuccessView> createState() => _TransferSuccessViewState();
+  ConsumerState<TransferSuccessView> createState() =>
+      _TransferSuccessViewState();
 }
 
 class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
@@ -53,7 +54,7 @@ class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
     final c = context.colors;
     final s = widget.session;
     final prefs = ref.watch(preferencesProvider);
-    final totalMb = s.items.fold(0.0, (a, it) => a + parseMB(it.size));
+    final totalBytes = s.items.fold<int>(0, (sum, item) => sum + item.byteSize);
     final isSent = s.direction.isSent;
 
     return Scaffold(
@@ -69,10 +70,7 @@ class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
               Center(
                 child: ScaleTransition(
                   scale: Tween(begin: 0.0, end: 1.0).animate(
-                    CurvedAnimation(
-                      parent: _burst,
-                      curve: const _PopCurve(),
-                    ),
+                    CurvedAnimation(parent: _burst, curve: const _PopCurve()),
                   ),
                   child: Container(
                     width: 110,
@@ -82,7 +80,12 @@ class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child: AppIcon(AppIconName.check, size: 56, stroke: 2.6, color: c.green),
+                      child: AppIcon(
+                        AppIconName.check,
+                        size: 56,
+                        stroke: 2.6,
+                        color: c.green,
+                      ),
                     ),
                   ),
                 ),
@@ -96,12 +99,21 @@ class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
               const SizedBox(height: 10),
               Text.rich(
                 TextSpan(
-                  style: AppTextStyles.obDesc.copyWith(color: c.muted, height: 1.8),
+                  style: AppTextStyles.obDesc.copyWith(
+                    color: c.muted,
+                    height: 1.8,
+                  ),
                   children: [
-                    TextSpan(text: '${toFa(s.items.length)} مورد (${fmtMB(totalMb)}) با موفقیت ${isSent ? "به" : "از"} '),
+                    TextSpan(
+                      text:
+                          '${toFa(s.items.length)} مورد (${formatBytes(totalBytes)}) با موفقیت ${isSent ? "به" : "از"} ',
+                    ),
                     TextSpan(
                       text: s.peerName,
-                      style: TextStyle(color: c.text, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                        color: c.text,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     TextSpan(text: ' ${isSent ? "فرستاده شد" : "ذخیره شد"}.'),
                   ],
@@ -112,7 +124,10 @@ class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
                 const SizedBox(height: 16),
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: c.surface2,
                       borderRadius: BorderRadius.circular(100),
@@ -123,8 +138,10 @@ class _TransferSuccessViewState extends ConsumerState<TransferSuccessView>
                       children: [
                         AppIcon(AppIconName.folder, size: 15, color: c.muted),
                         const SizedBox(width: 7),
-                        Text('ذخیره در «${prefs.savePath}»',
-                            style: AppTextStyles.fileSub.copyWith(color: c.muted)),
+                        Text(
+                          'ذخیره در «${prefs.savePath}»',
+                          style: AppTextStyles.fileSub.copyWith(color: c.muted),
+                        ),
                       ],
                     ),
                   ),

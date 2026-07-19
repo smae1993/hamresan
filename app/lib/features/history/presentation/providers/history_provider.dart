@@ -30,5 +30,5 @@ class HistoryNotifier extends StateNotifier<List<TransferRecord>> {
 
 final historyProvider =
     StateNotifierProvider<HistoryNotifier, List<TransferRecord>>((ref) {
-  return HistoryNotifier(ref.watch(historyRepositoryProvider));
-});
+      return HistoryNotifier(ref.watch(historyRepositoryProvider));
+    });

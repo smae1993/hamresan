@@ -26,11 +26,10 @@ class AppPreferences {
     bool? visible,
     bool? autoAccept,
     String? savePath,
-  }) =>
-      AppPreferences(
-        theme: theme ?? this.theme,
-        visible: visible ?? this.visible,
-        autoAccept: autoAccept ?? this.autoAccept,
-        savePath: savePath ?? this.savePath,
-      );
+  }) => AppPreferences(
+    theme: theme ?? this.theme,
+    visible: visible ?? this.visible,
+    autoAccept: autoAccept ?? this.autoAccept,
+    savePath: savePath ?? this.savePath,
+  );
 }

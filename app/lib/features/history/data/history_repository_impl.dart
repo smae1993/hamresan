@@ -14,9 +14,10 @@ class HistoryRepositoryImpl implements HistoryRepository {
 
   void _migrate() {
     final ver = _prefs.getInt(_verKey) ?? 0;
-    if (ver < 2) {
-      _prefs.remove(_key);
-      _prefs.setInt(_verKey, 2);
+    if (ver < 3) {
+      // Version 3 adds `createdAt`. Older records are read with a safe
+      // fallback instead of deleting the user's history.
+      _prefs.setInt(_verKey, 3);
     }
   }
 
@@ -26,7 +27,9 @@ class HistoryRepositoryImpl implements HistoryRepository {
     if (raw == null) return [];
     try {
       final list = json.decode(raw) as List<dynamic>;
-      return list.map((e) => TransferRecord.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => TransferRecord.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (_) {
       return [];
     }
@@ -36,6 +39,7 @@ class HistoryRepositoryImpl implements HistoryRepository {
   Future<void> add(TransferRecord record) async {
     final records = await getAll();
     records.insert(0, record);
+    if (records.length > 500) records.removeRange(500, records.length);
     final encoded = json.encode(records.map((r) => r.toJson()).toList());
     await _prefs.setString(_key, encoded);
   }

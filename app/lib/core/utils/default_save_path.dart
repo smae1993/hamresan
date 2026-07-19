@@ -2,16 +2,18 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 Future<String> defaultSavePath() async {
-  if (Platform.isAndroid || Platform.isIOS) {
-    return 'دریافتی‌های همرسان';
-  }
   try {
-    final dir = await getDownloadsDirectory();
+    final dir = Platform.isAndroid || Platform.isIOS
+        ? await getApplicationDocumentsDirectory()
+        : await getDownloadsDirectory();
     if (dir != null) {
-      final path = '${dir.path}/همرسان';
+      final path = '${dir.path}${Platform.pathSeparator}همرسان';
       await Directory(path).create(recursive: true);
       return path;
     }
   } catch (_) {}
-  return 'دریافتی‌های همرسان';
+  final fallback =
+      '${Directory.systemTemp.path}${Platform.pathSeparator}همرسان';
+  await Directory(fallback).create(recursive: true);
+  return fallback;
 }

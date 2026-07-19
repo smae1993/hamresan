@@ -22,13 +22,19 @@ import '../../features/transfer/data/incoming_repository_impl.dart';
 import '../../features/transfer/data/transfer_repository_impl.dart';
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError('sharedPreferencesProvider must be overridden in main()');
+  throw UnimplementedError(
+    'sharedPreferencesProvider must be overridden in main()',
+  );
 });
 
 final lanServiceProvider = Provider<LanService>((ref) {
   final service = LanService();
   ref.onDispose(() => service.dispose());
   return service;
+});
+
+final lanStatusProvider = StreamProvider<LanStatus>((ref) {
+  return ref.watch(lanServiceProvider).statusStream;
 });
 
 final deviceRepositoryProvider = Provider<DeviceRepository>((ref) {
@@ -68,5 +74,5 @@ final incomingStreamProvider = StreamProvider<IncomingRequest?>((ref) {
 });
 
 final transferRepositoryProvider = Provider<TransferRepository>((ref) {
-  return TransferRepositoryImpl(ref.watch(lanServiceProvider), ref.watch(sharedPreferencesProvider));
+  return TransferRepositoryImpl(ref.watch(lanServiceProvider));
 });

@@ -1,4 +1,3 @@
-import 'dart:math' show max;
 /// Transfer screen — همرسان.
 ///
 /// Recreates `TransferView` from `screens_send.jsx` (used for both send &
@@ -19,7 +18,9 @@ import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/progress_ring.dart';
 import '../domain/entities/content_item.dart';
 import '../domain/entities/transfer_session.dart';
+import '../domain/entities/transfer_progress.dart';
 import '../domain/enums.dart';
+import 'content_item_icon.dart';
 import 'transfer_success.dart';
 
 class TransferScreen extends ConsumerWidget {
@@ -33,7 +34,7 @@ class TransferScreen extends ConsumerWidget {
   });
 
   final TransferSession session;
-  final double progress; // 0..1
+  final TransferProgress progress;
   final bool done;
   final VoidCallback onCancel;
   final VoidCallback onFinish;
@@ -41,10 +42,7 @@ class TransferScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (done) {
-      return TransferSuccessView(
-        session: session,
-        onFinish: onFinish,
-      );
+      return TransferSuccessView(session: session, onFinish: onFinish);
     }
     return _TransferInProgress(
       session: session,
@@ -62,19 +60,27 @@ class _TransferInProgress extends StatelessWidget {
   });
 
   final TransferSession session;
-  final double progress;
+  final TransferProgress progress;
   final VoidCallback onCancel;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final pct = (progress * 100).round();
+    final ratio = progress.ratio;
+    final pct = (ratio * 100).round();
     final items = session.items;
-    final totalMb = items.fold(0.0, (a, it) => a + parseMB(it.size));
-    final sentMb = totalMb * progress;
-    // Speed: simplified mock, mirrors the prototype formula.
-    final speed = totalMb / 100 * 12;
-    final etaSec = max(0, ((100 - pct) / 14).ceil());
+    final totalBytes = progress.totalBytes > 0
+        ? progress.totalBytes
+        : session.totalBytes;
+    final speedMb = progress.bytesPerSecond / (1024 * 1024);
+    final etaSec = progress.eta?.inSeconds;
+    final status = switch (progress.phase) {
+      TransferPhase.waitingForApproval => 'در انتظار تأیید گیرنده',
+      TransferPhase.connecting => 'در حال اتصال امن',
+      TransferPhase.transferring => '${session.direction.verb} در حال انجام',
+      TransferPhase.verifying => 'در حال بررسی صحت فایل‌ها',
+      TransferPhase.completed => 'انتقال کامل شد',
+    };
 
     return Scaffold(
       backgroundColor: c.bg,
@@ -95,8 +101,13 @@ class _TransferInProgress extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  Text('${session.direction.verb} در حال انجام',
-                      style: AppTextStyles.scanning.copyWith(fontSize: 12.5, color: c.muted)),
+                  Text(
+                    status,
+                    style: AppTextStyles.scanning.copyWith(
+                      fontSize: 12.5,
+                      color: c.muted,
+                    ),
+                  ),
                   const Spacer(),
                   const SizedBox(width: 42),
                 ],
@@ -114,7 +125,7 @@ class _TransferInProgress extends StatelessWidget {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          ProgressRing(progress: progress),
+                          ProgressRing(progress: ratio),
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -123,18 +134,27 @@ class _TransferInProgress extends StatelessWidget {
                                   children: [
                                     TextSpan(
                                       text: toFa(pct),
-                                      style: AppTextStyles.pctNumber.copyWith(color: c.text),
+                                      style: AppTextStyles.pctNumber.copyWith(
+                                        color: c.text,
+                                      ),
                                     ),
                                     TextSpan(
                                       text: '٪',
-                                      style: AppTextStyles.pctNumber.copyWith(color: c.text, fontSize: 22),
+                                      style: AppTextStyles.pctNumber.copyWith(
+                                        color: c.text,
+                                        fontSize: 22,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              Text('${fmtMB(sentMb)} از ${fmtMB(totalMb)}',
-                                  style: AppTextStyles.pctLabel.copyWith(color: c.muted)),
+                              Text(
+                                '${formatBytes(progress.transferredBytes)} از ${formatBytes(totalBytes)}',
+                                style: AppTextStyles.pctLabel.copyWith(
+                                  color: c.muted,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -145,7 +165,11 @@ class _TransferInProgress extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Avatar(hue: session.peerHue, type: session.peerType, size: 34),
+                        Avatar(
+                          hue: session.peerHue,
+                          type: session.peerType,
+                          size: 34,
+                        ),
                         const SizedBox(width: 10),
                         Text(
                           '${session.direction.isSent ? "به" : "از"} ${session.peerName}',
@@ -159,7 +183,7 @@ class _TransferInProgress extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _Stat(
-                          value: toFa(speed.toStringAsFixed(1)),
+                          value: toFa(speedMb.toStringAsFixed(1)),
                           label: 'MB/s',
                           valueColor: c.primary,
                         ),
@@ -170,7 +194,7 @@ class _TransferInProgress extends StatelessWidget {
                           color: c.border,
                         ),
                         _Stat(
-                          value: '${toFa(etaSec)} ث',
+                          value: etaSec == null ? '—' : '${toFa(etaSec)} ث',
                           label: 'باقی‌مانده',
                         ),
                       ],
@@ -180,7 +204,7 @@ class _TransferInProgress extends StatelessWidget {
                     for (var i = 0; i < items.length; i++)
                       _FileProgress(
                         item: items[i],
-                        progress: session.fileProgress(progress * 100)[i],
+                        progress: progress.fileRatio(i) * 100,
                       ),
                   ],
                 ),
@@ -204,8 +228,10 @@ class _Stat extends StatelessWidget {
     final c = context.colors;
     return Column(
       children: [
-        Text(value,
-            style: AppTextStyles.statNumber.copyWith(color: valueColor ?? c.text)),
+        Text(
+          value,
+          style: AppTextStyles.statNumber.copyWith(color: valueColor ?? c.text),
+        ),
         const SizedBox(height: 2),
         Text(label, style: AppTextStyles.statLabel.copyWith(color: c.muted)),
       ],
@@ -236,7 +262,12 @@ class _FileProgress extends StatelessWidget {
               borderRadius: BorderRadius.circular(13),
             ),
             child: Center(
-              child: AppIcon(item.icon, size: 20, stroke: 2, color: Colors.white),
+              child: AppIcon(
+                item.icon,
+                size: 20,
+                stroke: 2,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(width: 12),

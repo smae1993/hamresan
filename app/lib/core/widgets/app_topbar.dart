@@ -31,10 +31,7 @@ class AppTopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (leading != null) ...[
-            leading!,
-            const SizedBox(width: 12),
-          ],
+          if (leading != null) ...[leading!, const SizedBox(width: 12)],
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

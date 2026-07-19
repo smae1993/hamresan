@@ -28,7 +28,9 @@ class _HamresanAppState extends ConsumerState<HamresanApp> {
       scaffoldMessengerKey: _scaffoldMessengerKey,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: prefs.theme == AppThemeMode.dark ? ThemeMode.dark : ThemeMode.light,
+      themeMode: prefs.theme == AppThemeMode.dark
+          ? ThemeMode.dark
+          : ThemeMode.light,
       routerConfig: router,
       builder: (context, child) {
         return LanInitializer(

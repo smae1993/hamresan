@@ -5,7 +5,6 @@
 /// save location, network info, and a "test receive" action.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_dimensions.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_theme.dart';
@@ -15,9 +14,6 @@ import '../../../core/widgets/app_topbar.dart';
 import '../../../core/widgets/brand_logo.dart';
 import '../../../core/widgets/segmented_control.dart';
 import '../../discovery/presentation/providers/identity_provider.dart';
-import '../../transfer/domain/entities/content_item.dart';
-import '../../transfer/domain/entities/incoming_request.dart';
-import '../../transfer/domain/enums.dart';
 import '../domain/entities/app_preferences.dart';
 import 'providers/network_info_provider.dart';
 import 'providers/preferences_provider.dart';
@@ -38,13 +34,19 @@ class SettingsScreen extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 0).copyWith(
-            bottom: AppDimensions.navHeight + 20,
-          ),
+          padding: const EdgeInsets.fromLTRB(
+            20,
+            4,
+            20,
+            0,
+          ).copyWith(bottom: AppDimensions.navHeight + 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const AppTopBar(title: 'تنظیمات', subtitle: 'دستگاه و ترجیحات تو'),
+              const AppTopBar(
+                title: 'تنظیمات',
+                subtitle: 'دستگاه و ترجیحات تو',
+              ),
               ProfileCard(
                 identity: me,
                 onChanged: (next) =>
@@ -66,13 +68,23 @@ class SettingsScreen extends ConsumerWidget {
                           const SizedBox(height: 10),
                           SegmentedControl(
                             items: const [
-                              SegmentedItem(label: 'روشن', icon: AppIconName.sun),
-                              SegmentedItem(label: 'تیره', icon: AppIconName.moon),
+                              SegmentedItem(
+                                label: 'روشن',
+                                icon: AppIconName.sun,
+                              ),
+                              SegmentedItem(
+                                label: 'تیره',
+                                icon: AppIconName.moon,
+                              ),
                             ],
                             selected: prefs.theme == AppThemeMode.dark ? 1 : 0,
                             onChanged: (i) => ref
                                 .read(preferencesProvider.notifier)
-                                .setTheme(i == 1 ? AppThemeMode.dark : AppThemeMode.light),
+                                .setTheme(
+                                  i == 1
+                                      ? AppThemeMode.dark
+                                      : AppThemeMode.light,
+                                ),
                           ),
                         ],
                       ),
@@ -91,24 +103,23 @@ class SettingsScreen extends ConsumerWidget {
                     onChanged: (v) =>
                         ref.read(preferencesProvider.notifier).setVisible(v),
                   ),
-                  _ToggleRow(
-                    icon: AppIconName.zap,
-                    label: 'پذیرش خودکار',
-                    caption: 'دریافت بدون تأیید از دستگاه‌های مورد اعتماد',
-                    value: prefs.autoAccept,
-                    onChanged: (v) =>
-                        ref.read(preferencesProvider.notifier).setAutoAccept(v),
-                  ),
                   _NavRow(
                     icon: AppIconName.folder,
                     label: 'محل ذخیره',
                     value: prefs.savePath,
                     onTap: () async {
                       final cur = prefs.savePath;
-                      final initial = cur.isNotEmpty && cur.startsWith('/') ? cur : null;
-                      final path = await showDirectoryPicker(context, initial: initial);
+                      final initial = cur.isNotEmpty && cur.startsWith('/')
+                          ? cur
+                          : null;
+                      final path = await showDirectoryPicker(
+                        context,
+                        initial: initial,
+                      );
                       if (path != null && context.mounted) {
-                        await ref.read(preferencesProvider.notifier).setSavePath(path);
+                        await ref
+                            .read(preferencesProvider.notifier)
+                            .setSavePath(path);
                       }
                     },
                   ),
@@ -118,24 +129,58 @@ class SettingsScreen extends ConsumerWidget {
               _SettingsGroup(
                 children: [
                   netAsync.when(
-                    data: (net) => _InfoRow(icon: AppIconName.wifi, label: 'شبکه', value: net.ssid),
-                    loading: () => _InfoRow(icon: AppIconName.wifi, label: 'شبکه', value: 'در حال تشخیص...'),
-                    error: (_, __) => _InfoRow(icon: AppIconName.wifi, label: 'شبکه', value: 'خطا در تشخیص'),
+                    data: (net) => _InfoRow(
+                      icon: AppIconName.wifi,
+                      label: 'شبکه',
+                      value: net.ssid,
+                    ),
+                    loading: () => _InfoRow(
+                      icon: AppIconName.wifi,
+                      label: 'شبکه',
+                      value: 'در حال تشخیص...',
+                    ),
+                    error: (_, __) => _InfoRow(
+                      icon: AppIconName.wifi,
+                      label: 'شبکه',
+                      value: 'خطا در تشخیص',
+                    ),
                   ),
                   netAsync.when(
-                    data: (net) => _InfoRow(icon: AppIconName.pin, label: 'نشانی IP', value: net.ip),
-                    loading: () => _InfoRow(icon: AppIconName.pin, label: 'نشانی IP', value: 'در حال تشخیص...'),
-                    error: (_, __) => _InfoRow(icon: AppIconName.pin, label: 'نشانی IP', value: 'خطا در تشخیص'),
+                    data: (net) => _InfoRow(
+                      icon: AppIconName.pin,
+                      label: 'نشانی IP',
+                      value: net.ip,
+                    ),
+                    loading: () => _InfoRow(
+                      icon: AppIconName.pin,
+                      label: 'نشانی IP',
+                      value: 'در حال تشخیص...',
+                    ),
+                    error: (_, __) => _InfoRow(
+                      icon: AppIconName.pin,
+                      label: 'نشانی IP',
+                      value: 'خطا در تشخیص',
+                    ),
                   ),
                   _InfoRow(
                     icon: AppIconName.shield,
-                    label: 'رمزنگاری',
+                    label: 'بررسی صحت فایل',
                     valueWidget: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        AppIcon(AppIconName.check, size: 15, stroke: 2.6, color: context.colors.green),
+                        AppIcon(
+                          AppIconName.check,
+                          size: 15,
+                          stroke: 2.6,
+                          color: context.colors.green,
+                        ),
                         const SizedBox(width: 5),
-                        Text('فعال', style: AppTextStyles.setVal.copyWith(color: context.colors.green)),
+                        Text(
+                          'SHA-256 فعال',
+                          style: AppTextStyles.setVal.copyWith(
+                            color: context.colors.green,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -144,14 +189,11 @@ class SettingsScreen extends ConsumerWidget {
               _SectionHeader2(title: 'بیشتر'),
               _SettingsGroup(
                 children: [
-                  _NavRow(
-                    icon: AppIconName.download,
-                    label: 'آزمایش دریافت فایل',
-                    caption: 'شبیه‌سازی یک درخواست ورودی',
-                    onTap: () => _triggerTestReceive(ref),
-                    tintedIcon: true,
+                  _InfoRow(
+                    icon: AppIconName.info,
+                    label: 'نسخه',
+                    value: '۱٫۰٫۰',
                   ),
-                  _InfoRow(icon: AppIconName.info, label: 'نسخه', value: '۱٫۰٫۰'),
                 ],
               ),
               const SizedBox(height: 22),
@@ -160,8 +202,12 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     const BrandLogo(size: 34),
                     const SizedBox(height: 8),
-                    Text('همرسان · ساخته‌شده برای اشتراک بی‌دردسر',
-                        style: AppTextStyles.setCap.copyWith(color: context.colors.faint)),
+                    Text(
+                      'همرسان · ساخته‌شده برای اشتراک بی‌دردسر',
+                      style: AppTextStyles.setCap.copyWith(
+                        color: context.colors.faint,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -170,23 +216,6 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  void _triggerTestReceive(WidgetRef ref) {
-    final request = IncomingRequest(
-      peer: 'گوشی علی',
-      hue: 200,
-      type: 'phone',
-      platform: 'Android',
-      code: 'ققنوس-۱۴',
-      items: [
-        ContentItem(key: 'test-1', name: 'غروب ساحل.jpg', kind: ContentKind.image, size: '۴٫۲ MB', hue: 24),
-        ContentItem(key: 'test-2', name: 'تولد.jpg', kind: ContentKind.image, size: '۳٫۱ MB', hue: 330),
-        ContentItem(key: 'test-3', name: 'سفر شمال.mp4', kind: ContentKind.video, size: '۸۸ MB', hue: 200),
-      ],
-      total: '۹۵٫۳ MB',
-    );
-    ref.read(incomingRepositoryProvider).trigger(request);
   }
 }
 
@@ -222,7 +251,13 @@ class _SettingsGroup extends StatelessWidget {
           for (var i = 0; i < children.length; i++) ...[
             children[i],
             if (i < children.length - 1)
-              Divider(height: 1, thickness: 1, color: c.border, indent: 16, endIndent: 16),
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: c.border,
+                indent: 16,
+                endIndent: 16,
+              ),
           ],
         ],
       ),
@@ -279,7 +314,12 @@ class _ToggleRow extends StatelessWidget {
               children: [
                 Text(label, style: AppTextStyles.setLabel),
                 const SizedBox(height: 2),
-                Text(caption, style: AppTextStyles.setCap.copyWith(color: context.colors.muted)),
+                Text(
+                  caption,
+                  style: AppTextStyles.setCap.copyWith(
+                    color: context.colors.muted,
+                  ),
+                ),
               ],
             ),
           ),
@@ -314,7 +354,10 @@ class _InfoRow extends StatelessWidget {
           if (valueWidget != null)
             valueWidget!
           else if (value != null)
-            Text(value!, style: AppTextStyles.setVal.copyWith(color: context.colors.muted)),
+            Text(
+              value!,
+              style: AppTextStyles.setVal.copyWith(color: context.colors.muted),
+            ),
         ],
       ),
     );
@@ -356,13 +399,19 @@ class _NavRow extends StatelessWidget {
                   Text(label, style: AppTextStyles.setLabel),
                   if (caption != null) ...[
                     const SizedBox(height: 2),
-                    Text(caption!, style: AppTextStyles.setCap.copyWith(color: c.muted)),
+                    Text(
+                      caption!,
+                      style: AppTextStyles.setCap.copyWith(color: c.muted),
+                    ),
                   ],
                 ],
               ),
             ),
             if (value != null)
-              Text(value!, style: AppTextStyles.setVal.copyWith(color: c.muted)),
+              Text(
+                value!,
+                style: AppTextStyles.setVal.copyWith(color: c.muted),
+              ),
             const SizedBox(width: 4),
             AppIcon(AppIconName.back, size: 17, color: c.faint),
           ],

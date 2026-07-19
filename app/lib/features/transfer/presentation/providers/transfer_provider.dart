@@ -8,6 +8,8 @@
 /// transfer screen. Persists nothing itself; it records completed transfers
 /// into [HistoryNotifier].
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/providers/repository_providers.dart';
@@ -19,6 +21,7 @@ import '../../../history/presentation/providers/history_provider.dart';
 import '../../domain/entities/content_item.dart';
 import '../../domain/entities/incoming_request.dart';
 import '../../domain/entities/transfer_session.dart';
+import '../../domain/entities/transfer_progress.dart';
 import '../../domain/enums.dart';
 import '../../domain/repositories/transfer_repository.dart';
 
@@ -55,15 +58,15 @@ class TransferIncoming extends TransferFlowState {
 class TransferTransferring extends TransferFlowState {
   const TransferTransferring({
     required this.session,
-    this.progress = 0,
+    required this.progress,
     this.done = false,
   });
 
   final TransferSession session;
-  final double progress; // 0..1
+  final TransferProgress progress;
   final bool done;
 
-  TransferTransferring copyWith({double? progress, bool? done}) =>
+  TransferTransferring copyWith({TransferProgress? progress, bool? done}) =>
       TransferTransferring(
         session: session,
         progress: progress ?? this.progress,
@@ -71,9 +74,15 @@ class TransferTransferring extends TransferFlowState {
       );
 }
 
+class TransferFailed extends TransferFlowState {
+  const TransferFailed({required this.session, required this.message});
+  final TransferSession session;
+  final String message;
+}
+
 class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
   TransferFlowNotifier(this._transferRepo, this._history)
-      : super(const TransferIdle());
+    : super(const TransferIdle());
 
   final TransferRepository _transferRepo;
   final HistoryNotifier _history;
@@ -87,7 +96,7 @@ class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
   /// Started from the FAB: open picker with no device; recipient sheet later.
   void startSendFlow() => state = const TransferPicker(device: null);
 
-  /// Simulate an incoming request (Settings → "آزمایش دریافت فایل", or bell).
+  /// Presents an incoming request emitted by the LAN service.
   void showIncoming(IncomingRequest req) =>
       state = TransferIncoming(request: req);
 
@@ -111,17 +120,20 @@ class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
   // ---- Incoming transitions ----
 
   void acceptIncoming(IncomingRequest req) => _beginReceive(req);
-  void declineIncoming() => state = const TransferIdle();
+  void declineIncoming(IncomingRequest request) {
+    unawaited(_transferRepo.decline(request));
+    state = const TransferIdle();
+  }
 
   // ---- Cancel / done ----
 
   void cancel() {
-    _transferRepo.cancel();
-    _sub?.cancel();
     final current = state;
     if (current is TransferTransferring) {
+      unawaited(_transferRepo.cancel(current.session.id));
       _recordHistory(current.session, TransferStatus.cancelled);
     }
+    _sub?.cancel();
     state = const TransferIdle();
   }
 
@@ -130,11 +142,13 @@ class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
 
   // ---- Internals ----
 
-  StreamSubscription<double>? _sub;
+  StreamSubscription<TransferProgress>? _sub;
 
   void _beginSend(Device device, List<ContentItem> items) {
     final session = TransferSession(
+      id: _newTransferId(),
       direction: TransferDirection.sent,
+      peerId: device.id,
       peerName: device.name,
       peerHue: device.hue,
       peerType: device.type,
@@ -145,7 +159,9 @@ class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
 
   void _beginReceive(IncomingRequest req) {
     final session = TransferSession(
+      id: req.transferId,
       direction: TransferDirection.received,
+      peerId: req.peerId,
       peerName: req.peer,
       peerHue: req.hue,
       peerType: req.type,
@@ -156,33 +172,40 @@ class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
 
   void _run(TransferSession session) {
     _sub?.cancel();
-    state = TransferTransferring(session: session, progress: 0, done: false);
+    state = TransferTransferring(
+      session: session,
+      progress: TransferProgress.waiting(totalBytes: session.totalBytes),
+      done: false,
+    );
 
     final stream = session.direction.isSent
         ? _transferRepo.send(session)
         : _transferRepo.receive(session);
 
     _sub = stream.listen(
-      (p) {
+      (progress) {
         if (state is! TransferTransferring) return;
         final cur = state as TransferTransferring;
-        if (p >= 1) {
-          state = cur.copyWith(progress: 1, done: true);
+        if (progress.phase == TransferPhase.completed) {
+          state = cur.copyWith(progress: progress, done: true);
           _recordHistory(session, TransferStatus.done);
         } else {
-          state = cur.copyWith(progress: p);
+          state = cur.copyWith(progress: progress);
         }
       },
       onError: (Object error) {
-        state = const TransferIdle();
+        state = TransferFailed(session: session, message: error.toString());
         _recordHistory(session, TransferStatus.failed);
       },
       onDone: () {
         if (state is TransferTransferring) {
           final cur = state as TransferTransferring;
           if (!cur.done) {
-            state = cur.copyWith(progress: 1, done: true);
-            _recordHistory(session, TransferStatus.done);
+            state = TransferFailed(
+              session: session,
+              message: 'ارتباط پیش از تأیید نهایی پایان یافت.',
+            );
+            _recordHistory(session, TransferStatus.failed);
           }
         }
       },
@@ -191,20 +214,28 @@ class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
 
   void _recordHistory(TransferSession session, TransferStatus status) {
     final items = session.items;
-    final totalMb = items.fold(0.0, (a, it) => a + parseMB(it.size));
+    final totalBytes = items.fold<int>(0, (sum, item) => sum + item.byteSize);
     final summary = items.length == 1
         ? items.first.name
         : '${toFa(items.length)} مورد';
-    _history.add(TransferRecord(
-      id: 'n${DateTime.now().millisecondsSinceEpoch}',
-      direction: session.direction,
-      peer: session.peerName,
-      hue: session.peerHue,
-      summary: summary,
-      size: fmtMB(totalMb),
-      when: 'هم‌اکنون',
-      status: status,
-    ));
+    _history.add(
+      TransferRecord(
+        id: 'n${DateTime.now().millisecondsSinceEpoch}',
+        direction: session.direction,
+        peer: session.peerName,
+        hue: session.peerHue,
+        summary: summary,
+        size: formatBytes(totalBytes),
+        createdAt: DateTime.now(),
+        status: status,
+      ),
+    );
+  }
+
+  String _newTransferId() {
+    final random = Random.secure();
+    final bytes = List.generate(18, (_) => random.nextInt(256));
+    return base64UrlEncode(bytes).replaceAll('=', '');
   }
 
   @override
@@ -216,9 +247,8 @@ class TransferFlowNotifier extends StateNotifier<TransferFlowState> {
 
 final transferFlowProvider =
     StateNotifierProvider<TransferFlowNotifier, TransferFlowState>((ref) {
-  return TransferFlowNotifier(
-    ref.watch(transferRepositoryProvider),
-    ref.watch(historyProvider.notifier),
-  );
-});
-
+      return TransferFlowNotifier(
+        ref.watch(transferRepositoryProvider),
+        ref.watch(historyProvider.notifier),
+      );
+    });

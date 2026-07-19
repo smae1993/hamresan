@@ -12,20 +12,20 @@ class AppGradients {
 
   /// Brand gradient (`--grad`): 135deg gradStart → gradEnd.
   static LinearGradient brand(AppColors c) => LinearGradient(
-        begin: const Alignment(-1, -1),
-        end: const Alignment(1, 1),
-        colors: [c.gradStart, c.gradEnd],
-      );
+    begin: const Alignment(-1, -1),
+    end: const Alignment(1, 1),
+    colors: [c.gradStart, c.gradEnd],
+  );
 
   /// Soft brand gradient (`--grad-soft`).
   static LinearGradient brandSoft(AppColors c) => LinearGradient(
-        begin: const Alignment(-1, -1),
-        end: const Alignment(1, 1),
-        colors: [
-          Color.lerp(c.primarySoft, c.bg, 0.0)!,
-          Color.lerp(c.primarySoftBd, c.bg, 0.4)!,
-        ],
-      );
+    begin: const Alignment(-1, -1),
+    end: const Alignment(1, 1),
+    colors: [
+      Color.lerp(c.primarySoft, c.bg, 0.0)!,
+      Color.lerp(c.primarySoftBd, c.bg, 0.4)!,
+    ],
+  );
 
   /// Radar ring color used on the identity card (semi-transparent white).
   static const Color radarRing = Color(0x80FFFFFF);
@@ -50,9 +50,9 @@ class AppGradients {
 
   /// Striped placeholder colors (`StripePlaceholder`).
   static List<Color> stripePair(double hue) => [
-        _oklchToColor(0.7, 0.1, hue),
-        _oklchToColor(0.62, 0.12, hue),
-      ];
+    _oklchToColor(0.7, 0.1, hue),
+    _oklchToColor(0.62, 0.12, hue),
+  ];
 }
 
 // --- OKLCH → sRGB ---

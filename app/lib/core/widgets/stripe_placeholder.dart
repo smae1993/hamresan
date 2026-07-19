@@ -63,7 +63,12 @@ class _StripePainter extends CustomPainter {
         paintA,
       );
       canvas.drawRect(
-        Rect.fromLTWH(x + stripe / 2, -size.height, stripe / 2, size.height * 3),
+        Rect.fromLTWH(
+          x + stripe / 2,
+          -size.height,
+          stripe / 2,
+          size.height * 3,
+        ),
         paintB,
       );
     }
@@ -71,6 +76,5 @@ class _StripePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _StripePainter old) =>
-      old.a != a || old.b != b;
+  bool shouldRepaint(covariant _StripePainter old) => old.a != a || old.b != b;
 }

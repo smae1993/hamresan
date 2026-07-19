@@ -7,14 +7,18 @@ import 'content_item.dart';
 
 class TransferSession {
   const TransferSession({
+    required this.id,
     required this.direction,
+    required this.peerId,
     required this.peerName,
     required this.peerHue,
     this.peerType,
     required this.items,
   });
 
+  final String id;
   final TransferDirection direction;
+  final String peerId;
   final String peerName;
   final double peerHue;
 
@@ -22,13 +26,7 @@ class TransferSession {
   final String? peerType;
   final List<ContentItem> items;
 
-  /// Per-item file progress (0..100), indexed parallel to [items].
-  List<double> fileProgress(double overallPct) {
-    final n = items.length;
-    return List.generate(n, (i) {
-      final start = (i / n) * 100;
-      final fp = (overallPct - start) / (100 / n) * 100;
-      return fp.clamp(0, 100);
-    });
-  }
+  int get totalBytes => items.fold(0, (sum, item) => sum + item.byteSize);
+
+  // File progress is emitted by the transfer engine and weighted by bytes.
 }

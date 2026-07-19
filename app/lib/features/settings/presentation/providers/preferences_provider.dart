@@ -47,5 +47,5 @@ class PreferencesNotifier extends StateNotifier<AppPreferences> {
 
 final preferencesProvider =
     StateNotifierProvider<PreferencesNotifier, AppPreferences>((ref) {
-  return PreferencesNotifier(ref.watch(preferencesRepositoryProvider));
-});
+      return PreferencesNotifier(ref.watch(preferencesRepositoryProvider));
+    });

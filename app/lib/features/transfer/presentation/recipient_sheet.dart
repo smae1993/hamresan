@@ -22,11 +22,12 @@ Future<Device?> showRecipientSheet(
   BuildContext context, {
   required List<ContentItem> items,
 }) {
-  final totalMb = items.fold(0.0, (a, it) => a + parseMB(it.size));
+  final totalBytes = items.fold<int>(0, (sum, item) => sum + item.byteSize);
   return showAppSheet<Device>(
     context: context,
     title: 'انتخاب گیرنده',
-    subtitle: '${toFa(items.length)} مورد · ${fmtMB(totalMb)} آماده‌ی ارسال',
+    subtitle:
+        '${toFa(items.length)} مورد · ${formatBytes(totalBytes)} آماده‌ی ارسال',
     body: RecipientSheetBody(items: items),
   );
 }

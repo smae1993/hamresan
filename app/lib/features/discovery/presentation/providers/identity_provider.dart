@@ -7,7 +7,16 @@ import '../../domain/entities/identity.dart';
 import '../../domain/repositories/identity_repository.dart';
 
 class IdentityNotifier extends StateNotifier<Identity> {
-  IdentityNotifier(this._repo) : super(const Identity(name: 'گوشی من', platform: 'Android', hue: 281, code: 'آبی-۲۷')) {
+  IdentityNotifier(this._repo)
+    : super(
+        const Identity(
+          id: '',
+          name: 'دستگاه من',
+          platform: '',
+          hue: 281,
+          code: '',
+        ),
+      ) {
     _load();
   }
 
@@ -22,14 +31,13 @@ class IdentityNotifier extends StateNotifier<Identity> {
     await _repo.save(next);
   }
 
-  Future<void> setName(String name) async =>
-      update(state.copyWith(name: name));
+  Future<void> setName(String name) async => update(state.copyWith(name: name));
 
-  Future<void> setHue(double hue) async =>
-      update(state.copyWith(hue: hue));
+  Future<void> setHue(double hue) async => update(state.copyWith(hue: hue));
 }
 
-final identityProvider =
-    StateNotifierProvider<IdentityNotifier, Identity>((ref) {
+final identityProvider = StateNotifierProvider<IdentityNotifier, Identity>((
+  ref,
+) {
   return IdentityNotifier(ref.watch(identityRepositoryProvider));
 });

@@ -69,7 +69,10 @@ class _IdentityCardState extends State<IdentityCard>
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.35), width: 1.5),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.35),
+                        width: 1.5,
+                      ),
                     ),
                     child: Center(
                       child: Text(
@@ -87,15 +90,27 @@ class _IdentityCardState extends State<IdentityCard>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(me.name, style: AppTextStyles.idName.copyWith(color: Colors.white)),
+                        Text(
+                          me.name,
+                          style: AppTextStyles.idName.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
                         const SizedBox(height: 3),
                         Row(
                           children: [
-                            const AppIcon(AppIconName.phone, size: 14, stroke: 2, color: Colors.white),
+                            const AppIcon(
+                              AppIconName.phone,
+                              size: 14,
+                              stroke: 2,
+                              color: Colors.white,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'این دستگاه · ${me.platform}',
-                              style: AppTextStyles.idMeta.copyWith(color: Colors.white.withValues(alpha: 0.85)),
+                              style: AppTextStyles.idMeta.copyWith(
+                                color: Colors.white.withValues(alpha: 0.85),
+                              ),
                             ),
                           ],
                         ),
@@ -108,7 +123,10 @@ class _IdentityCardState extends State<IdentityCard>
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 13,
+                      vertical: 7,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(100),
@@ -117,7 +135,12 @@ class _IdentityCardState extends State<IdentityCard>
                       children: [
                         const LiveDot(color: Colors.white),
                         const SizedBox(width: 7),
-                        Text('قابل مشاهده برای اطراف', style: AppTextStyles.pillStatus.copyWith(color: Colors.white)),
+                        Text(
+                          'قابل مشاهده برای اطراف',
+                          style: AppTextStyles.pillStatus.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
                       ],
                     ),
                   ),
